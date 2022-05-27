@@ -50,3 +50,19 @@
     name: fuzzball-substrate
     state: started
     enabled: yes
+
+- name: Create iqube group
+  ansible.builtin.user:
+    name: iqube
+    system: yes
+
+- name: Create iqube user
+  ansible.builtin.user:
+    name: iqube
+    group: iqube
+    system: yes
+
+- name: Configure passwordless sudo for iqube user
+  ansible.builtin.copy:
+    src: sudoers.d/iqube
+    dest: /etc/sudoers.d/iqube

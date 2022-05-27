@@ -1,0 +1,6 @@
+---
+
+- name: Prepare controller nodes for iqube
+  hosts: iqube_controller
+  roles:
+    - iqube_controller

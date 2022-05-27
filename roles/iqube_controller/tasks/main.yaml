@@ -1,0 +1,52 @@
+---
+
+- name: Install rng-tools
+  ansible.builtin.package:
+    name: rng-tools
+    state: present
+
+- name: Start rngd
+  ansible.builtin.service:
+    name: rngd
+    state: started
+    enabled: yes
+
+- name: Configure selinux to be permissive
+  ansible.posix.selinux:
+    state: permissive
+    policy: targeted
+
+- name: Disable firewalld
+  ansible.builtin.service:
+    name: firewalld
+    state: stopped
+    enabled: no
+
+- name: Configure NetworkManager to ignore fuzzball interfaces
+  ansible.builtin.copy:
+    src: NetworkManager/conf.d/iqube.conf
+    dest: /etc/NetworkManager/conf.d/iqube.conf
+  notify: Reload NetworkManager
+
+- name: Distribute fuzzball-substrate package
+  ansible.builtin.copy:
+    src: "artifacts/{{ fuzzball_substrate_rpm }}"
+    dest: "/root/{{ fuzzball_substrate_rpm }}"
+
+- name: Install fuzzball-substrate
+  ansible.builtin.package:
+    name: "/root/{{ fuzzball_substrate_rpm }}"
+    disable_gpg_check: yes
+    state: present
+
+- name: Configure fuzzball-substrate
+  ansible.builtin.template:
+    src: fuzzball-substrate.env
+    dest: /etc/default/fuzzball-substrate.env
+  notify: Restart fuzzball-substrate
+
+- name: Start fuzzball-substrate
+  ansible.builtin.service:
+    name: fuzzball-substrate
+    state: started
+    enabled: yes

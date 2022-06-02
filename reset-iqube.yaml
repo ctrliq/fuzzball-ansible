@@ -1,0 +1,72 @@
+---
+
+- name: Shut down fuzzball-substrate
+  hosts: iqube_controller
+  tasks:
+    - name: Start fuzzball-substrate
+      ansible.builtin.service:
+        name: fuzzball-substrate
+        state: stopped
+  tags:
+    - shutdown
+
+
+- name: Unmount shared state
+  hosts: iqube_controller
+  tasks:
+    - name: Unmount shared state
+      ansible.posix.mount:
+        path: /var/lib/fuzzball/shared
+        state: unmounted
+  tags:
+    - remove
+
+
+- name: Remove local state
+  hosts: iqube_controller
+  tasks:
+    - name: Remove local state
+      ansible.builtin.file:
+        state: absent
+        path: /var/lib/fuzzball
+  tags:
+    - remove
+
+
+- name: Remove shared state
+  hosts: iqube_nfs_server
+  tasks:
+    - name: Find shared files to delete
+      ansible.builtin.find:
+        paths: /srv/fuzzball/shared
+        recurse: no
+      register: files_to_delete
+
+    - name: Remove shared files
+      ansible.builtin.file:
+        state: absent
+        path: "{{ item.path }}"
+      loop: "{{ files_to_delete.files }}"
+  tags:
+    - remove
+
+
+- name: Remove iqube config
+  hosts: iqube_workstation
+  tasks:
+    - name: Remove iqube config
+      ansible.builtin.file:
+        state: absent
+        path: /home/iqube/config
+  become: yes
+  become_user: iqube
+  tags:
+    - remove
+
+
+- name: Reboot controllers
+  hosts: iqube_controller
+  tasks:
+    - name: Reboot controllers
+      ansible.builtin.reboot:
+        msg: "Rebooting for iqube reset"

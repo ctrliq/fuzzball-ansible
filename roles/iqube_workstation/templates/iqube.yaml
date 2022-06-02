@@ -1,0 +1,43 @@
+ssh:
+  profiles:
+    nodes:
+      port: 22
+      user: iqube
+      key: /home/iqube/.ssh/iqube
+cluster:
+  nodes:
+{% for node in iqube['cluster']['nodes'] %}
+    - name: {{ node['name'] }}
+      roles:
+        - controller
+        - worker
+      ssh:
+        host: {{ node['ssh']['host'] }}
+        profile: nodes
+      advertise-address: {{ node['advertise-address'] }}
+{% endfor %}
+  bootstrap:
+    # control plane VIP needs to be on same network as the hosts above
+    control-plane-vip: {{ iqube['bootstrap']['control-plane-vip'] }}
+    load-balancer:
+      enabled: true
+      ip-range:
+        start: {{ iqube['bootstrap']['ip-range']['start'] }}
+        end: {{ iqube['bootstrap']['ip-range']['end'] }}
+  provisioners:
+    - image: fuzzball-stack.sif
+      config:
+        tls:
+          self-signed: true
+          lets-encrypt: null
+        services:
+          fuzzball:
+            hostname: ""
+            sharedfs-directory: /var/lib/fuzzball/shared
+          registry:
+            hostname: ""
+            enabled: true
+          authentication:
+            hostname: ""
+            realm: ""
+            admin-password: ""

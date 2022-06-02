@@ -1,0 +1,22 @@
+---
+
+- name: Create iqube group
+  ansible.builtin.user:
+    name: iqube
+    system: yes
+
+- name: Create iqube user
+  ansible.builtin.user:
+    name: iqube
+    group: iqube
+    system: yes
+
+- name: Authorize iqube ssh public key
+  ansible.posix.authorized_key:
+    user: iqube
+    key: "{{ iqube['ssh_public_key'] }}"
+
+- name: Configure passwordless sudo for iqube user
+  ansible.builtin.copy:
+    src: sudoers.d/iqube
+    dest: /etc/sudoers.d/iqube

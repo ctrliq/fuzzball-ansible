@@ -1,6 +1,43 @@
 ---
 
+- name: Prepare shared storage NFS server
+  hosts: iqube_nfs_server
+  roles:
+    - iqube_nfs_server
+  tags:
+    - iqube
+    - nfs
+
+- name: Deploy the iqube user
+  hosts: iqube_controller,iqube_workstation
+  roles:
+    - iqube_user
+  tags:
+    - iqube
+    - user
+
 - name: Prepare controller nodes for iqube
   hosts: iqube_controller
   roles:
     - iqube_controller
+#     # - nfs mount
+  tags:
+    - iqube
+    - controller
+
+# - name: Attach compute node to fuzzball-orchestrate
+#   hosts: iqube_compute
+#   roles:
+#     - squashfs-tools
+#     - fuzzball-substrate
+#     # - FB_POLL_CONFIG=/sharedStorage/substrate-config.yaml
+#     # - nfs mount
+#     - selinux # permissive
+
+- name: Deploy fuzzball-orchestrate via iqube
+  hosts: iqube_workstation
+  roles:
+    - iqube_workstation
+  tags:
+    - iqube
+    - workstation

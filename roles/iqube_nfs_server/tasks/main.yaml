@@ -1,0 +1,25 @@
+---
+
+- name: Install nfs-utils
+  ansible.builtin.package:
+    name: nfs-utils
+    state: present
+
+- name: Create directory to share
+  ansible.builtin.file:
+    path: /srv/fuzzball/shared
+    state: directory
+    mode: 0755
+
+- name: Configure fuzzball shared directory export
+  ansible.builtin.lineinfile:
+    path: /etc/exports
+    regexp: '^/srv/fuzzball/shared '
+    line: /srv/fuzzball/shared {{ iqube['nfs']['client_subnet'] }}(rw,sync,no_subtree_check,no_root_squash)
+  notify: Export nfs
+
+- name: Start nfs-server
+  ansible.builtin.service:
+    name: nfs-server
+    state: started
+    enabled: yes

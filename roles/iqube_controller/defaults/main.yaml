@@ -1,0 +1,4 @@
+---
+
+FB_STANDALONE: true
+FB_MOUNTNS: true

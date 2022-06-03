@@ -9,7 +9,7 @@
     - nfs
 
 - name: Deploy the iqube user
-  hosts: iqube_controller,iqube_workstation
+  hosts: iqube_controller,iqube_admin
   roles:
     - iqube_user
   tags:
@@ -35,9 +35,9 @@
 #     - selinux # permissive
 
 - name: Deploy fuzzball-orchestrate via iqube
-  hosts: iqube_workstation
+  hosts: iqube_admin
   roles:
-    - iqube_workstation
+    - iqube_admin
   tags:
     - iqube
     - workstation

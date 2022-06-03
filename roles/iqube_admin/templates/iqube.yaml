@@ -25,7 +25,7 @@ cluster:
         start: {{ iqube['bootstrap']['ip-range']['start'] }}
         end: {{ iqube['bootstrap']['ip-range']['end'] }}
   provisioners:
-    - image: fuzzball-stack.sif
+    - image: /home/iqube/fuzzball-stack.sif
       config:
         tls:
           self-signed: true
@@ -33,7 +33,7 @@ cluster:
         services:
           fuzzball:
             hostname: ""
-            sharedfs-directory: /var/lib/fuzzball/shared
+            sharedfs-directory: /mnt/fuzzball/shared
           registry:
             hostname: ""
             enabled: true

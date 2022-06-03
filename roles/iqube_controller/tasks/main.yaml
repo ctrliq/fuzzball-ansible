@@ -1,5 +1,11 @@
 ---
 
+- name: Populate /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ item['advertise-address'] }} {{ item['name'] }}"
+  loop: "{{ iqube['cluster']['nodes'] }}"
+
 - name: Install rng-tools
   ansible.builtin.package:
     name: rng-tools
@@ -37,7 +43,7 @@
 
 - name: Create shared storage mountpoint
   ansible.builtin.file:
-    path: /var/lib/fuzzball/shared
+    path: /mnt/fuzzball/shared
     state: directory
     mode: 0755
   tags:
@@ -46,7 +52,7 @@
 - name: Mount shared storage
   ansible.posix.mount:
     src: "{{ iqube['nfs']['server'] }}:/srv/fuzzball/shared"
-    path: /var/lib/fuzzball/shared
+    path: /mnt/fuzzball/shared
 #    opts: "rw,sync,no_subtree_check,no_root_squash"
     state: mounted
     fstype: nfs

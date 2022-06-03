@@ -3,13 +3,11 @@
 - name: Create iqube group
   ansible.builtin.user:
     name: iqube
-    system: yes
 
 - name: Create iqube user
   ansible.builtin.user:
     name: iqube
     group: iqube
-    system: yes
 
 - name: Authorize iqube ssh public key
   ansible.posix.authorized_key:

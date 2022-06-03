@@ -52,6 +52,12 @@
     group: iqube
     mode: 0600
 
+- name: Install fuzzball cli
+  ansible.builtin.package:
+    name: https://artifacts.ciq.dev/fuzzball/latest/fuzzball-v1.2.7-rc-11.linux-amd64.rpm
+    state: present
+    disable_gpg_check: yes
+
 # - name: Initialize iqube
 #   ansible.builtin.command:
 #     cmd: iqube new kubernetes-substrate.sif
@@ -76,5 +82,3 @@
 #   become: yes
 #   become_user: iqube
 #   run_once: yes
-
-# - name: provision up

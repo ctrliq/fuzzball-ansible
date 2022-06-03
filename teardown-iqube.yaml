@@ -1,14 +1,14 @@
 ---
 
-- name: Shut down fuzzball-substrate
+- name: Stop fuzzball-substrate
   hosts: iqube_controller
   tasks:
-    - name: Start fuzzball-substrate
+    - name: Stop fuzzball-substrate
       ansible.builtin.service:
         name: fuzzball-substrate
         state: stopped
   tags:
-    - shutdown
+    - stop
 
 
 - name: Unmount shared state
@@ -52,7 +52,7 @@
 
 
 - name: Remove iqube config
-  hosts: iqube_workstation
+  hosts: iqube_admin
   tasks:
     - name: Remove iqube config
       ansible.builtin.file:
@@ -70,3 +70,5 @@
     - name: Reboot controllers
       ansible.builtin.reboot:
         msg: "Rebooting for iqube reset"
+  tags:
+    - reboot

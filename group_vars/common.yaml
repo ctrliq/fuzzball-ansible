@@ -1,2 +1,48 @@
 ---
+
+# The fuzzball-substrate rpm must be placed in the artifacts/
+# directory prior to deployment
 fuzzball_substrate_rpm: fuzzball-substrate-v1.2.7-rc-10.el8.amd64.rpm
+
+
+iqube:
+
+  nfs:
+    server: 10.0.0.200 # the NFS server clients will connect to
+    client_subnet: 10.0.0.0/24 # permitted subnet for NFS export
+
+  # the iqube binary must be placed in the artifacts/ directory prior
+  # to deployment
+  bin: iqube
+
+  # update cluster and bootstrap for the local environment
+  cluster:
+    nodes:
+      - name: iqubectl1
+        ssh:
+          host: 10.0.0.1
+        advertise-address: 10.0.0.1
+      - name: iqubectl2
+        ssh:
+          host: 10.0.0.2
+        advertise-address: 10.0.0.2
+      - name: iqubectl3
+        ssh:
+          host: 10.0.0.3
+        advertise-address: 10.0.0.3
+  bootstrap:
+    control-plane-vip: 10.0.0.99
+    ip-range:
+      start: 10.0.0.100
+      end: 10.0.0.199
+
+  # iqube will use this private key to access the controller nodes
+  ssh_private_key: |
+      -----BEGIN OPENSSH PRIVATE KEY-----
+      [ insert private key here ]
+      -----END OPENSSH PRIVATE KEY-----
+
+  # controller nodes will use this public key to authorize iqube for
+  # remote access
+  ssh_public_key: |
+      [ add public key here ]

@@ -23,14 +23,14 @@
 
 - name: Pull fuzzball-stack.sif
   ansible.builtin.command:
-    cmd: apptainer pull /home/iqube/fuzzball-stack.sif oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:latest
+    cmd: "apptainer pull /home/iqube/fuzzball-stack.sif {{ iqube['fuzzball_stack'] }}"
     creates: /home/iqube/fuzzball-stack.sif
   become: yes
   become_user: iqube
 
 - name: Pull kubernetes-substrate.sif
   ansible.builtin.command:
-    cmd: apptainer pull /home/iqube/kubernetes-substrate.sif oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:latest
+    cmd: "apptainer pull /home/iqube/kubernetes-substrate.sif {{ iqube['kubernetes_substrate'] }}"
     creates: /home/iqube/kubernetes-substrate.sif
   become: yes
   become_user: iqube
@@ -54,7 +54,7 @@
 
 - name: Install fuzzball cli
   ansible.builtin.package:
-    name: https://artifacts.ciq.dev/fuzzball/latest/fuzzball-v1.2.7-rc-11.linux-amd64.rpm
+    name: "{{ fuzzball_cli_rpm }}"
     state: present
     disable_gpg_check: yes
 

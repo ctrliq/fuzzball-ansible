@@ -16,11 +16,18 @@
     - iqube
     - user
 
+- name: Configure iqube hosts entries
+  hosts: iqube_controller,iqube_admin
+  roles:
+    - iqube_hosts
+  tags:
+    - iqube
+    - hosts
+
 - name: Prepare controller nodes for iqube
   hosts: iqube_controller
   roles:
     - iqube_controller
-#     # - nfs mount
   tags:
     - iqube
     - controller

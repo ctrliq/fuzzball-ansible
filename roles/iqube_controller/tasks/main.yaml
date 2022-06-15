@@ -1,11 +1,5 @@
 ---
 
-- name: Populate /etc/hosts
-  ansible.builtin.lineinfile:
-    path: /etc/hosts
-    line: "{{ item['advertise-address'] }} {{ item['name'] }}"
-  loop: "{{ iqube['cluster']['nodes'] }}"
-
 - name: Install rng-tools
   ansible.builtin.package:
     name: rng-tools

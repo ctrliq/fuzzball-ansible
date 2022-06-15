@@ -23,3 +23,9 @@
     name: nfs-server
     state: started
     enabled: yes
+
+- name: permit traffic in default zone for nfs service
+  ansible.posix.firewalld:
+    service: nfs
+    permanent: yes
+    state: enabled

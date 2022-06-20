@@ -1,12 +1,15 @@
 ---
 
-- name: Distribute IQube binary
+- name: Distribute iqube package
   ansible.builtin.copy:
-    src: "artifacts/{{ iqube['bin'] }}"
-    dest: "/usr/local/bin/iqube"
-    owner: root
-    group: root
-    mode: 0755
+    src: "artifacts/{{ iqube_rpm }}"
+    dest: "/root/{{ iqube_rpm }}"
+
+- name: Install iqube
+  ansible.builtin.package:
+    name: "/root/{{ iqube_rpm }}"
+    disable_gpg_check: yes
+    state: present
 
 - name: Install apptainer
   ansible.builtin.package:

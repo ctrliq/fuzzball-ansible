@@ -1,21 +1,18 @@
 ---
 
-# The fuzzball-substrate rpm must be placed in the artifacts/
+# The iqube and fuzzball-substrate rpms must be placed in the artifacts/
 # directory prior to deployment
+iqube_rpm: iqube-0.0.0~rc0.x86_64.rpm
 fuzzball_substrate_rpm: fuzzball-substrate-v1.2.7-rc-10.el8.amd64.rpm
 fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/latest/fuzzball-v1.2.7-rc-13.linux-amd64.rpm
 
 iqube:
-  fuzzball_stack: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-12
+  fuzzball_stack: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-13
   kubernetes_substrate: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:latest
 
   nfs:
     server: 10.0.0.200 # the NFS server clients will connect to
     client_subnet: 10.0.0.0/24 # permitted subnet for NFS export
-
-  # the iqube binary must be placed in the artifacts/ directory prior
-  # to deployment
-  bin: iqube
 
   # update cluster and bootstrap for the local environment
   cluster:

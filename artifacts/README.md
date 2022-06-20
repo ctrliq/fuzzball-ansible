@@ -2,10 +2,9 @@ A place to place artifacts until we have proper repositories.
 
 Do not commit artifacts to this repository.
 
-- iqube binary - must be built from source
+- iqube binary - must be pulled with oras
 
-      git clone git@bitbucket.org:ciqinc/iqube.git
-      (cd iqube && make iqube)
+	  oras pull us-west1-docker.pkg.dev/fuzzball-dev/iqube/iqube-packages:v1.0.0-rc-1
 
 - fuzzball-substrate RPM - must be pulled with oras
 

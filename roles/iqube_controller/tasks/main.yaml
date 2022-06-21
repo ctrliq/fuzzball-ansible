@@ -11,11 +11,6 @@
     state: started
     enabled: yes
 
-- name: Configure selinux to be permissive
-  ansible.posix.selinux:
-    state: permissive
-    policy: targeted
-
 - name: Disable firewalld
   ansible.builtin.service:
     name: firewalld
@@ -27,52 +22,3 @@
     src: NetworkManager/conf.d/iqube.conf
     dest: /etc/NetworkManager/conf.d/iqube.conf
   notify: Reload NetworkManager
-
-- name: Install nfs-utils
-  ansible.builtin.package:
-    name: nfs-utils
-    state: present
-  tags:
-    - nfs
-
-- name: Create shared storage mountpoint
-  ansible.builtin.file:
-    path: /mnt/fuzzball/shared
-    state: directory
-    mode: 0755
-  tags:
-    - nfs
-
-- name: Mount shared storage
-  ansible.posix.mount:
-    src: "{{ iqube['nfs']['server'] }}:/srv/fuzzball/shared"
-    path: /mnt/fuzzball/shared
-#    opts: "rw,sync,no_subtree_check,no_root_squash"
-    state: mounted
-    fstype: nfs
-  tags:
-    - nfs
-  notify: Restart fuzzball-substrate
-
-- name: Distribute fuzzball-substrate package
-  ansible.builtin.copy:
-    src: "artifacts/{{ fuzzball_substrate_rpm }}"
-    dest: "/root/{{ fuzzball_substrate_rpm }}"
-
-- name: Install fuzzball-substrate
-  ansible.builtin.package:
-    name: "/root/{{ fuzzball_substrate_rpm }}"
-    disable_gpg_check: yes
-    state: present
-
-- name: Configure fuzzball-substrate
-  ansible.builtin.template:
-    src: fuzzball-substrate.env
-    dest: /etc/default/fuzzball-substrate.env
-  notify: Restart fuzzball-substrate
-
-- name: Start fuzzball-substrate
-  ansible.builtin.service:
-    name: fuzzball-substrate
-    state: started
-    enabled: yes

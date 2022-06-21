@@ -4,5 +4,6 @@
   ansible.builtin.lineinfile:
     path: /etc/hosts
     line: "{{ item['advertise-address'] }} {{ item['name'] }}"
+    regexp: "^{{ item['advertise-address'] }} "
   loop: "{{ iqube['cluster']['nodes'] }}"
 

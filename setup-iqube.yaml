@@ -17,7 +17,7 @@
     - user
 
 - name: Configure iqube hosts entries
-  hosts: iqube_controller,iqube_admin
+  hosts: iqube_controller,iqube_admin,iqube_compute
   roles:
     - iqube_hosts
   tags:
@@ -27,21 +27,18 @@
 - name: Prepare controller nodes for iqube
   hosts: iqube_controller
   roles:
+    - fuzzball_substrate
     - iqube_controller
   tags:
     - iqube
     - controller
 
-# - name: Attach compute node to fuzzball-orchestrate
-#   hosts: iqube_compute
-#   roles:
-#     - squashfs-tools
-#     - fuzzball-substrate
-#     # - FB_POLL_CONFIG=/sharedStorage/substrate-config.yaml
-#     # - nfs mount
-#     - selinux # permissive
+- name: Attach compute node to fuzzball-orchestrate
+  hosts: iqube_compute
+  roles:
+    - fuzzball_substrate
 
-- name: Deploy fuzzball-orchestrate via iqube
+- name: Deploy iqube
   hosts: iqube_admin
   roles:
     - iqube_admin

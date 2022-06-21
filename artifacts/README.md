@@ -8,7 +8,7 @@ Do not commit artifacts to this repository.
 
 - fuzzball-substrate RPM - must be pulled with oras
 
-      oras pull us-west1-docker.pkg.dev/fuzzball-dev/fuzzball/fuzzball-substrate-packages:v1.2.7-rc-10
+      oras pull us-west1-docker.pkg.dev/fuzzball-dev/fuzzball/fuzzball-substrate-packages:v1.2.7-rc-12
 
 - fuzzball-stack.sif - must be pulled with apptainer
 

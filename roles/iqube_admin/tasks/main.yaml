@@ -1,5 +1,11 @@
 ---
 
+- name: Install apptainer
+  ansible.builtin.package:
+    name: https://github.com/apptainer/apptainer/releases/download/v1.0.2/apptainer-1.0.2-1.x86_64.rpm
+    state: present
+    disable_gpg_check: yes
+
 - name: Distribute iqube package
   ansible.builtin.copy:
     src: "artifacts/{{ iqube_rpm }}"
@@ -11,16 +17,10 @@
     disable_gpg_check: yes
     state: present
 
-- name: Install apptainer
-  ansible.builtin.package:
-    name: https://github.com/apptainer/apptainer/releases/download/v1.0.2/apptainer-1.0.2-1.x86_64.rpm
-    state: present
-    disable_gpg_check: yes
-
 - name: Log into container registry
   ansible.builtin.command:
     cmd: apptainer remote login --username=oauth2accesstoken --password-stdin oras://us-west1-docker.pkg.dev
-    stdin: "{{ apptainer_oauth2accesstoken }}"
+    stdin: "{{ oauth2accesstoken }}"
   become: yes
   become_user: iqube
 

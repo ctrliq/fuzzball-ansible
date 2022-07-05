@@ -29,7 +29,6 @@
   ansible.posix.mount:
     src: "{{ iqube['nfs']['server'] }}:/srv/fuzzball/shared"
     path: /mnt/fuzzball/shared
-#    opts: "rw,sync,no_subtree_check,no_root_squash"
     state: mounted
     fstype: nfs
   tags:
@@ -59,22 +58,12 @@
     state: started
     enabled: yes
 
-- name: Define fuzzball-substrate firewalld service
-  ansible.builtin.copy:
-    src: fuzzball-substrate.xml
-    dest: /etc/firewalld/services/fuzzball-substrate.xml
-    owner: root
-    group: root
-    mode: 0644
-  notify: Restart firewalld
+- name: Populate service facts to check if firewalld is running
+  ansible.builtin.service_facts:
   tags:
     - firewalld
 
-- name: permit traffic for fuzzball-substrate
-  ansible.posix.firewalld:
-    service: fuzzball-substrate
-    permanent: yes
-    immediate: yes
-    state: enabled
+- include_tasks: firewalld.yaml
+  when: "'firewalld' in ansible_facts.services and ansible_facts.services.firewalld.state == 'running'"
   tags:
     - firewalld

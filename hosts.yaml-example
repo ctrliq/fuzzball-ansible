@@ -1,17 +1,48 @@
 all:
   vars:
-    iqube_ssh_private_key: ~/.ssh/iqube
-    iqube_ssh_public_key: ~/.ssh/iqube.pub
-    fuzzball_substrate_rpm: artifacts/fuzzball-substrate-v1.2.7-rc-12.el8.amd64.rpm
+    # iqube bootstraps a kubernetes-on-substrate cluser, and then
+    # provisions fuzzball-orchestrate in that cluster.
     iqube_rpm: artifacts/iqube-0.0.0~rc0.x86_64.rpm
-    fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/latest/fuzzball-v1.2.7-rc-13.linux-amd64.rpm
-    iqube_fuzzball_stack: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-13
-    iqube_kubernetes_substrate: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:latest
-    iqube_nfs_subnet: 10.0.0.0/24
-    iqube_nfs_server: admin1
+
+    # The virtual IP that the iqube kubernetes cluster will use for
+    # control-plane traffic.
     iqube_control_plane_vip: 10.0.0.99
+
+    # The start and end of the range that the iqube kubernetes cluster
+    # will use for microservices.
     iqube_ip_range_start: 10.0.0.100
     iqube_ip_range_end: 10.0.0.199
+
+    # fuzzball-orchestrate uses shared storage to communicate configuration to fuzzball-substrate.
+    iqube_nfs_server: admin1
+
+    # The subnet to which the provisioned NFS server will export the shared file system.
+    iqube_nfs_subnet: 10.0.0.0/24
+
+    # The kubernetes-substrate container provides the microservices
+    # that will be used to bootstrap the kubernetes-on-substrate
+    # cluster.
+    iqube_kubernetes_substrate: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:latest
+
+    # The fuzzball-stack container provides the microservices that
+    # will be used to provision fuzzball-orchestrate on the bootstrapped
+    # kubernetes cluster.
+    iqube_fuzzball_stack: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-13
+
+    # fuzzball-substrate is a container and virtual machine runtime
+    # and serves as the agent for fuzzball-orchestrate.
+    fuzzball_substrate_rpm: artifacts/fuzzball-substrate-v1.2.7-rc-12.el8.amd64.rpm
+
+    # iqube uses ssh to control the iqube_controller hosts from the
+    # iqube_admin host.
+    iqube_ssh_private_key: ~/.ssh/iqube
+    iqube_ssh_public_key: ~/.ssh/iqube.pub
+
+    # The fuzzball CLI provides user and administrative access to
+    # fuzzball from a command-line. It will be installed on
+    # iqube_admin, but can be installed anywhere with sufficient
+    # network access.
+    fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/latest/fuzzball-v1.2.7-rc-13.linux-amd64.rpm
 
   children:
     iqube_admin:
@@ -24,7 +55,20 @@ all:
 
     iqube_controller:
       hosts:
-        ctl[1:3]:
+        ctl1:
+          # The address that iqube will use for ssh conection to the
+          # host.
+          iqube_ssh_host: 10.0.0.1
+
+          # The address that kubernetes and fuzzball-substrate will
+          # use to advertise services.
+          iqube_advertise_address: 10.0.0.1
+        ctl2:
+          iqube_ssh_host: 10.0.0.2
+          iqube_advertise_address: 10.0.0.2
+        ctl3:
+          iqube_ssh_host: 10.0.0.3
+          iqube_advertise_address: 10.0.0.3
 
     iqube_compute:
       hosts:

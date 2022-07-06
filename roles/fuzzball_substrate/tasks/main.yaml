@@ -55,5 +55,6 @@
 - name: Populate service facts to check if firewalld is running
   ansible.builtin.service_facts:
 
-- include_tasks: firewalld.yaml
+- name: Configure firewalld if it is running
+  include_tasks: firewalld.yaml
   when: "'firewalld' in ansible_facts.services and ansible_facts.services.firewalld.state == 'running'"

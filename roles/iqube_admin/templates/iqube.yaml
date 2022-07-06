@@ -6,15 +6,15 @@ ssh:
       key: /home/iqube/.ssh/iqube
 cluster:
   nodes:
-{% for node in iqube['cluster']['nodes'] %}
-    - name: {{ node['name'] }}
+{% for node in groups['iqube_controller'] %}
+    - name: {{ node }}
       roles:
         - controller
         - worker
       ssh:
-        host: {{ node['ssh']['host'] }}
+        host: {{ hostvars[node]['iqube_ssh_host'] }}
         profile: nodes
-      advertise-address: {{ node['advertise-address'] }}
+      advertise-address: {{ hostvars[node]['iqube_advertise_address'] }}
 {% endfor %}
   bootstrap:
     # control plane VIP needs to be on same network as the hosts above

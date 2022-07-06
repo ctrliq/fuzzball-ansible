@@ -3,7 +3,6 @@
 - name: Populate /etc/hosts
   ansible.builtin.lineinfile:
     path: /etc/hosts
-    line: "{{ item['advertise-address'] }} {{ item['name'] }}"
-    regexp: "^{{ item['advertise-address'] }} "
-  loop: "{{ iqube['cluster']['nodes'] }}"
-
+    line: "{{ hostvars[item]['iqube_advertise_address'] }} {{ item }}"
+    regexp: "^{{ hostvars[item]['iqube_advertise_address'] }} "
+  loop: "{{ groups['iqube_controller'] }}"

@@ -45,14 +45,24 @@ all:
     fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/latest/fuzzball-v1.2.7-rc-13.linux-amd64.rpm
 
   children:
+    # The iqube_admin host is a formal definition of an administrative
+    # workstation or login node from which the iqube binary is run. It
+    # provides no runtime dependency once fuzzball-orchestrate has
+    # been provisioned, and can otherwise be decommissioned (unless it
+    # is also used as iqube_nfs_server. See below.)
     iqube_admin:
       hosts:
         admin1:
 
+    # fuzzball-orchesrate uses shared storage fto communicate
+    # configuration to fuzzball-substrate. If no existing NFS server
+    # is available, iqube_nfs_server can be used to configure one.
     iqube_nfs_server:
       hosts:
         admin1:
 
+    # iqube_controller hosts the bootstrapped kubernetes-on-substrate
+    # cluster, onto which fuzzball-orchestrate is provisioned.
     iqube_controller:
       hosts:
         ctl1:
@@ -70,6 +80,8 @@ all:
           iqube_ssh_host: 10.0.0.3
           iqube_advertise_address: 10.0.0.3
 
+    # compute nodes run fuzzball-substrate as an agent of
+    # fuzzball-orchestrate, and accept fuzzball jobs for execution.
     iqube_compute:
       hosts:
         c[1:4]:

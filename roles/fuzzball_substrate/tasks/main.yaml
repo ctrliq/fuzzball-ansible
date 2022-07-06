@@ -23,7 +23,7 @@
 
 - name: Mount shared storage
   ansible.posix.mount:
-    src: "{{ iqube['nfs']['server'] }}:/srv/fuzzball/shared"
+    src: "{{ iqube_nfs_server }}:/srv/fuzzball/shared"
     path: /mnt/fuzzball/shared
     state: mounted
     fstype: nfs
@@ -31,12 +31,12 @@
 
 - name: Distribute fuzzball-substrate package
   ansible.builtin.copy:
-    src: "artifacts/{{ fuzzball_substrate_rpm }}"
-    dest: "/root/{{ fuzzball_substrate_rpm }}"
+    src: "{{ fuzzball_substrate_rpm }}"
+    dest: "/root/{{ fuzzball_substrate_rpm | basename }}"
 
 - name: Install fuzzball-substrate
   ansible.builtin.package:
-    name: "/root/{{ fuzzball_substrate_rpm }}"
+    name: "/root/{{ fuzzball_substrate_rpm | basename }}"
     disable_gpg_check: yes
     state: present
 

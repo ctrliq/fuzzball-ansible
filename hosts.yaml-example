@@ -2,6 +2,17 @@ all:
   vars:
     iqube_ssh_private_key: ~/.ssh/iqube
     iqube_ssh_public_key: ~/.ssh/iqube.pub
+    fuzzball_substrate_rpm: artifacts/fuzzball-substrate-v1.2.7-rc-12.el8.amd64.rpm
+    iqube_rpm: artifacts/iqube-0.0.0~rc0.x86_64.rpm
+    fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/latest/fuzzball-v1.2.7-rc-13.linux-amd64.rpm
+    iqube_fuzzball_stack: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-13
+    iqube_kubernetes_substrate: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:latest
+    iqube_nfs_subnet: 10.0.0.0/24
+    iqube_nfs_server: admin1
+    iqube_control_plane_vip: 10.0.0.99
+    iqube_ip_range_start: 10.0.0.100
+    iqube_ip_range_end: 10.0.0.199
+
   children:
     iqube_admin:
       hosts:

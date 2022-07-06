@@ -8,12 +8,12 @@
 
 - name: Distribute iqube package
   ansible.builtin.copy:
-    src: "artifacts/{{ iqube_rpm }}"
-    dest: "/root/{{ iqube_rpm }}"
+    src: "{{ iqube_rpm }}"
+    dest: "/root/{{ iqube_rpm | basename }}"
 
 - name: Install iqube
   ansible.builtin.package:
-    name: "/root/{{ iqube_rpm }}"
+    name: "/root/{{ iqube_rpm | basename }}"
     disable_gpg_check: yes
     state: present
 
@@ -26,14 +26,14 @@
 
 - name: Pull fuzzball-stack.sif
   ansible.builtin.command:
-    cmd: "apptainer pull /home/iqube/fuzzball-stack.sif {{ iqube['fuzzball_stack'] }}"
+    cmd: "apptainer pull /home/iqube/fuzzball-stack.sif {{ iqube_fuzzball_stack }}"
     creates: /home/iqube/fuzzball-stack.sif
   become: yes
   become_user: iqube
 
 - name: Pull kubernetes-substrate.sif
   ansible.builtin.command:
-    cmd: "apptainer pull /home/iqube/kubernetes-substrate.sif {{ iqube['kubernetes_substrate'] }}"
+    cmd: "apptainer pull /home/iqube/kubernetes-substrate.sif {{ iqube_kubernetes_substrate }}"
     creates: /home/iqube/kubernetes-substrate.sif
   become: yes
   become_user: iqube

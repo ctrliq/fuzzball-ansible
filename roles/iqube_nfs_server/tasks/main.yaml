@@ -15,7 +15,7 @@
   ansible.builtin.lineinfile:
     path: /etc/exports
     regexp: '^/srv/fuzzball/shared '
-    line: /srv/fuzzball/shared {{ iqube['nfs']['client_subnet'] }}(rw,sync,no_subtree_check,no_root_squash)
+    line: /srv/fuzzball/shared {{ iqube_nfs_subnet }}(rw,sync,no_subtree_check,no_root_squash)
   notify: Export nfs
 
 - name: Start nfs-server

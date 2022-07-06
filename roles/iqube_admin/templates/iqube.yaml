@@ -18,12 +18,12 @@ cluster:
 {% endfor %}
   bootstrap:
     # control plane VIP needs to be on same network as the hosts above
-    control-plane-vip: {{ iqube['bootstrap']['control-plane-vip'] }}
+    control-plane-vip: {{ iqube_control_plane_vip }}
     load-balancer:
       enabled: true
       ip-range:
-        start: {{ iqube['bootstrap']['ip-range']['start'] }}
-        end: {{ iqube['bootstrap']['ip-range']['end'] }}
+        start: {{ iqube_ip_range_start }}
+        end: {{ iqube_ip_range_end }}
   provisioners:
     - image: /home/iqube/fuzzball-stack.sif
       config:

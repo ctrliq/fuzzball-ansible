@@ -40,7 +40,7 @@
 
 - name: Place ssh private key
   ansible.builtin.copy:
-    content: "{{ iqube['ssh_private_key'] }}"
+    src: "{{ iqube_ssh_private_key }}"
     dest: ~iqube/.ssh/iqube
     owner: iqube
     group: iqube

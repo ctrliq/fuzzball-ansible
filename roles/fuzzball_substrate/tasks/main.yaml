@@ -14,16 +14,12 @@
   ansible.builtin.package:
     name: nfs-utils
     state: present
-  tags:
-    - nfs
 
 - name: Create shared storage mountpoint
   ansible.builtin.file:
     path: /mnt/fuzzball/shared
     state: directory
     mode: 0755
-  tags:
-    - nfs
 
 - name: Mount shared storage
   ansible.posix.mount:
@@ -31,8 +27,6 @@
     path: /mnt/fuzzball/shared
     state: mounted
     fstype: nfs
-  tags:
-    - nfs
   notify: Restart fuzzball-substrate
 
 - name: Distribute fuzzball-substrate package
@@ -60,10 +54,6 @@
 
 - name: Populate service facts to check if firewalld is running
   ansible.builtin.service_facts:
-  tags:
-    - firewalld
 
 - include_tasks: firewalld.yaml
   when: "'firewalld' in ansible_facts.services and ansible_facts.services.firewalld.state == 'running'"
-  tags:
-    - firewalld

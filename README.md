@@ -2,6 +2,14 @@
 
 	ansible-playbook setup-iqube.yaml --inventory hosts.ini \
 	  --extra-vars="oauth2accesstoken=$(gcloud --quiet auth print-access-token)"
+	  
+	  
+## Generating an ssh key
+
+iqube requires passwordless ssh connectivity between the admin host
+and the kubernetes cluster nodes.
+
+    ssh-keygen -t ed25519 -C 'iqube' -f ~/.ssh/iqube -N ''
 
 
 ## Artifacts

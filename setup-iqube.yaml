@@ -4,34 +4,22 @@
   hosts: iqube_nfs_server
   roles:
     - iqube_nfs_server
-  tags:
-    - iqube
-    - nfs
 
 - name: Deploy the iqube user
   hosts: iqube_controller,iqube_admin
   roles:
     - iqube_user
-  tags:
-    - iqube
-    - user
 
 - name: Configure iqube hosts entries
   hosts: iqube_controller,iqube_admin,iqube_compute
   roles:
     - iqube_hosts
-  tags:
-    - iqube
-    - hosts
 
 - name: Prepare controller nodes for iqube
   hosts: iqube_controller
   roles:
     - fuzzball_substrate
     - iqube_controller
-  tags:
-    - iqube
-    - controller
 
 - name: Attach compute node to fuzzball-orchestrate
   hosts: iqube_compute
@@ -42,6 +30,3 @@
   hosts: iqube_admin
   roles:
     - iqube_admin
-  tags:
-    - iqube
-    - workstation

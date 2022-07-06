@@ -12,7 +12,7 @@
 - name: Authorize iqube ssh public key
   ansible.posix.authorized_key:
     user: iqube
-    key: "{{ iqube['ssh_public_key'] }}"
+    key: "{{ lookup('file', iqube_ssh_public_key) }}"
 
 - name: Configure passwordless sudo for iqube user
   ansible.builtin.copy:

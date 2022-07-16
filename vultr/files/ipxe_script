@@ -1,0 +1,6 @@
+#!ipxe
+
+ifconf --configurator dhcp net1
+
+:retry_boot
+autoboot net1 || goto retry_boot

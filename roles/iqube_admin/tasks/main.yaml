@@ -49,6 +49,7 @@
 
 - name: Configure iqube.yaml
   ansible.builtin.template:
+    force: false
     src: iqube.yaml
     dest: ~iqube/iqube.yaml
     owner: iqube

@@ -41,3 +41,86 @@ cluster:
             hostname: ""
             realm: ""
             admin-password: ""
+#             ldap:
+#               # LDAP connection URL (must start with ldap:// or ldaps://)
+#               url: ldap://
+#
+#               # Use STARTTLS for the LDAP connection
+#               start-tls: false
+#
+#               # LDAP vendor used can take as value:
+#               # - AD: Active Directory
+#               # - RHDS: RedHat Directory Service
+#               # - TIVOLI: IBM Tivoli Directory Server
+#               # - EDIRECTORY: Novell eDirectory
+#               # - OTHER: OpenLDAP ...
+#               vendor: OTHER
+#
+#               # Bind DN for accessing LDAP server (use bind none method if empty)
+#               bind-dn: "cn=Directory Manager"
+#
+#               # Bind password for accessing LDAP server
+#               bind-password: ""
+#
+#               # Search scope (either single or subtree)
+#               search-scope: single
+#
+#               # User lookup configuration
+#               users:
+#                 # Full DN where users are
+#                 dn: "ou=people,dc=ciq,dc=co"
+#
+#                 attributes:
+#                   # Name of LDAP attribute used for username
+#                   username: uid
+#                   # Name of LDAP attribute used as RDN (top attribute) for user DN
+#                   rdn: uid
+#                   # Name of LDAP attribute used as a unique object identifier for LDAP objects
+#                   uuid: entryUUID
+#                   # Name of LDAP attribute used for UID number
+#                   uid-number: uidNumber
+#                   # Name of LDAP attribute used for primary GID number
+#                   gid-number: gidNumber
+#
+#                 # Object classes that a user entry must contain
+#                 objectclasses:
+#                   - inetOrgPerson
+#                   - organizationalPerson
+#
+#                 # Optional LDAP filter for filtering users, must start with '(' and end with ')'
+#                 filter: ""
+#
+#               # Group lookup configuration
+#               groups:
+#                 # Full DN where groups are
+#                 dn: "ou=groups,dc=ciq,dc=co"
+#
+#                 # Attribute type for group membership:
+#                 # - DN: means that group members are declared by using full DN form
+#                 # - UID: means that group members are declared by using UID form
+#                 membership-attribute-type: DN
+#
+#                 # User groups strategy:
+#                 # - GET_GROUPS_FROM_USER_MEMBEROF_ATTRIBUTE: groups of users will be retrieved from attribute specified by 'member-of'
+#                 # - LOAD_GROUPS_BY_MEMBER_ATTRIBUTE: groups of users will be retrieved by sending query to retrieve groups from 'group-membership' attribute
+#                 #   where user is listed in
+#                 user-groups-strategy: GET_GROUPS_FROM_USER_MEMBEROF_ATTRIBUTE
+#
+#                 attributes:
+#                   # Name of LDAP attribute in group used for group name
+#                   group-name: cn
+#                   # Name of LDAP attribute in group used for group membership mapping
+#                   group-membership: member
+#                   # Name of LDAP attribute in user used for group membership mapping (only membership-attribute-type is set to DN)
+#                   user-membership: uid
+#                   # Name of LDAP attribute in user containing the groups (only if user-group-strategy is set to GET_GROUPS_FROM_USER_MEMBEROF_ATTRIBUTE)
+#                   member-of: memberOf
+#                   # Name of LDAP attribute used for GID number
+#                   gid-number: gidNumber
+#
+#                 # Object classes that a group entry must contain
+#                 objectclasses:
+#                   - groupOfNames
+#
+#                 # Optional LDAP filter for filtering groups, must start with '(' and end with ')'
+#                 filter: ""

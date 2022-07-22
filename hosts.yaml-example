@@ -42,7 +42,7 @@ all:
     # fuzzball from a command-line. It will be installed on
     # iqube_admin, but can be installed anywhere with sufficient
     # network access.
-    fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/latest/fuzzball-v1.2.7-rc-14.linux-amd64.rpm
+    fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/builds/fuzzball-v1.2.7-rc-14.linux-amd64.rpm
 
   children:
     # The iqube_admin host is a formal definition of an administrative

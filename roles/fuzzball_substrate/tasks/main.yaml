@@ -57,4 +57,4 @@
 
 - name: Configure firewalld if it is running
   include_tasks: firewalld.yaml
-  when: "'firewalld' in ansible_facts.services and ansible_facts.services.firewalld.state == 'running'"
+  when: "'firewalld.service' in ansible_facts.services and ansible_facts.services['firewalld.service'].state == 'running'"

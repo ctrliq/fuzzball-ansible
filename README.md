@@ -26,12 +26,4 @@ directory.
 
 	oras pull us-west1-docker.pkg.dev/fuzzball-dev/fuzzball/fuzzball-substrate-packages:v1.2.7-rc-14
 
-**fuzzball-stack.sif** can be pulled with Apptainer.
-
-	apptainer pull oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-14
-
-**kubernetes-substrate.sif** can be pulled with Apptainer.
-
-	apptainer pull oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:v1.2.7-rc-14
-
 Do not commit artifacts to this repository.

@@ -23,7 +23,7 @@
 
 - name: Mount shared storage
   ansible.posix.mount:
-    src: "{{ iqube_nfs_server }}:/srv/fuzzball/shared"
+    src: "{{ iqube_nfs_mount }}"
     path: /mnt/fuzzball/shared
     state: mounted
     fstype: nfs

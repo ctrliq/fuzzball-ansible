@@ -14,7 +14,7 @@ all:
     iqube_ip_range_end: 10.0.0.199
 
     # fuzzball-orchestrate uses shared storage to communicate configuration to fuzzball-substrate.
-    iqube_nfs_server: admin1
+    iqube_nfs_mount: admin1:/srv/fuzzball/shared
 
     # The subnet to which the provisioned NFS server will export the shared file system.
     iqube_nfs_subnet: 10.0.0.0/24

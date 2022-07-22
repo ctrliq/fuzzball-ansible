@@ -7,9 +7,13 @@
     mode: 0644
   notify: Restart firewalld
 
-- name: permit traffic for fuzzball-substrate
+- name: Restart firewalld immediately to activate fuzzball-substrate service
+  meta: flush_handlers
+
+- name: Permit traffic for fuzzball-substrate
   ansible.posix.firewalld:
     service: fuzzball-substrate
     permanent: yes
     immediate: yes
     state: enabled
+  notify: Restart fuzzball-substrate

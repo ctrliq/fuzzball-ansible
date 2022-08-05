@@ -17,26 +17,27 @@
     disable_gpg_check: yes
     state: present
 
+- name: Create directory for SIFs
+  ansible.builtin.file:
+    path: /var/lib/iqube
+    state: directory
+    mode: '0755'
+
 - name: Log into container registry
   ansible.builtin.command:
     cmd: apptainer remote login --username=oauth2accesstoken --password-stdin oras://us-west1-docker.pkg.dev
     stdin: "{{ oauth2accesstoken }}"
-  become: yes
-  become_user: iqube
+  when: oauth2accesstoken is defined
 
 - name: Pull fuzzball-stack.sif
   ansible.builtin.command:
-    cmd: "apptainer pull /home/iqube/fuzzball-stack.sif {{ iqube_fuzzball_stack }}"
-    creates: /home/iqube/fuzzball-stack.sif
-  become: yes
-  become_user: iqube
+    cmd: "apptainer pull /var/lib/iqube/fuzzball-stack.sif {{ iqube_fuzzball_stack }}"
+    creates: /var/lib/iqube/fuzzball-stack.sif
 
 - name: Pull kubernetes-substrate.sif
   ansible.builtin.command:
-    cmd: "apptainer pull /home/iqube/kubernetes-substrate.sif {{ iqube_kubernetes_substrate }}"
-    creates: /home/iqube/kubernetes-substrate.sif
-  become: yes
-  become_user: iqube
+    cmd: "apptainer pull /var/lib/iqube/kubernetes-substrate.sif {{ iqube_kubernetes_substrate }}"
+    creates: /var/lib/iqube/kubernetes-substrate.sif
 
 - name: Place ssh private key
   ansible.builtin.copy:
@@ -64,7 +65,7 @@
 
 # - name: Initialize iqube
 #   ansible.builtin.command:
-#     cmd: iqube new kubernetes-substrate.sif
+#     cmd: iqube new /var/lib/iqube/kubernetes-substrate.sif
 #     chdir: /home/iqube
 #     creates: /home/iqube/config
 #   become: yes

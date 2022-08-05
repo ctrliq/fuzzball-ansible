@@ -25,7 +25,7 @@ cluster:
         start: {{ iqube_ip_range_start }}
         end: {{ iqube_ip_range_end }}
   provisioners:
-    - image: /home/iqube/fuzzball-stack.sif
+    - image: /var/lib/iqube/fuzzball-stack.sif
       config:
         tls:
           self-signed: true

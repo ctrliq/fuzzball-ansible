@@ -14,13 +14,6 @@
   tags:
     - user
 
-- name: Configure iqube hosts entries
-  hosts: iqube_controller,iqube_admin,iqube_compute
-  roles:
-    - iqube_hosts
-  tags:
-    - hosts
-
 - name: Prepare controller nodes for iqube
   hosts: iqube_controller
   roles:

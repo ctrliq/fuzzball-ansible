@@ -2,7 +2,7 @@ all:
   vars:
     # iqube bootstraps a kubernetes-on-substrate cluser, and then
     # provisions fuzzball-orchestrate in that cluster.
-    iqube_rpm: artifacts/iqube-1.0.0~rc-3.x86_64.rpm
+    iqube_rpm: artifacts/iqube-1.0.0~rc-4.x86_64.rpm
 
     # The virtual IP that the iqube kubernetes cluster will use for
     # control-plane traffic.
@@ -22,16 +22,16 @@ all:
     # The kubernetes-substrate container provides the microservices
     # that will be used to bootstrap the kubernetes-on-substrate
     # cluster.
-    iqube_kubernetes_substrate: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:v1.2.7-rc-14
+    iqube_kubernetes_substrate: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:v1.2.7-rc-27-cdaaf2f4
 
     # The fuzzball-stack container provides the microservices that
     # will be used to provision fuzzball-orchestrate on the bootstrapped
     # kubernetes cluster.
-    iqube_fuzzball_stack: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-14
+    iqube_fuzzball_stack: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-27-cdaaf2f4
 
     # fuzzball-substrate is a container and virtual machine runtime
     # and serves as the agent for fuzzball-orchestrate.
-    fuzzball_substrate_rpm: artifacts/fuzzball-substrate-v1.2.7-rc-14.el8.amd64.rpm
+    fuzzball_substrate_rpm: artifacts/fuzzball-substrate-v1.2.7-rc-28.el8.amd64.rpm
 
     # iqube uses ssh to control the iqube_controller hosts from the
     # iqube_admin host.
@@ -42,7 +42,7 @@ all:
     # fuzzball from a command-line. It will be installed on
     # iqube_admin, but can be installed anywhere with sufficient
     # network access.
-    fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/builds/fuzzball-v1.2.7-rc-14.linux-amd64.rpm
+    fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/builds/fuzzball-v1.2.7-rc-22.linux-amd64.rpm
 
   children:
     # The iqube_admin host is a formal definition of an administrative

@@ -7,27 +7,12 @@
   tags:
     - nfs
 
-- name: Deploy the iqube user
-  hosts: iqube_controller,iqube_admin
-  roles:
-    - iqube_user
-  tags:
-    - user
-
 - name: Prepare controller nodes for iqube
   hosts: iqube_controller
   roles:
-    - fuzzball_substrate
     - iqube_controller
   tags:
     - controller
-
-- name: Attach compute node to fuzzball-orchestrate
-  hosts: iqube_compute
-  roles:
-    - fuzzball_substrate
-  tags:
-    - compute
 
 - name: Install iqube
   hosts: iqube_admin
@@ -35,3 +20,10 @@
     - iqube_admin
   tags:
     - iqube
+
+- name: Install fuzzball-cli
+  hosts: iqube_admin
+  roles:
+    - fuzzball_cli
+  tags:
+    - fuzzball

@@ -1,0 +1,6 @@
+---
+
+- name: Install fuzzball cli
+  ansible.builtin.package:
+    name: fuzzball-cli
+    state: present

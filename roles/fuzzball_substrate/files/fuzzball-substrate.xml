@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<service>
-  <short>fuzzball-substrate</short>
-  <description>fuzzball-substrate daemon</description>
-  <port port="7331" protocol="tcp"/>
-  <port port="7332" protocol="tcp"/>
-  <port port="7333" protocol="tcp"/>
-  <port port="7333" protocol="udp"/>
-</service>

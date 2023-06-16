@@ -1,0 +1,4 @@
+---
+
+iqube_kubernetes_substrate: oras://repo.ciq.com/iqube/kubernetes-substrate
+iqube_fuzzball_stack: oras://repo.ciq.com/iqube/fuzzball-stack

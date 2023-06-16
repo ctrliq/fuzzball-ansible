@@ -7,19 +7,19 @@
   tags:
     - nfs
 
-- name: Prepare controller nodes for iqube
-  hosts: iqube_controller
-  roles:
-    - iqube_controller
-  tags:
-    - controller
-
 - name: Install iqube
   hosts: iqube_admin
   roles:
     - iqube_admin
   tags:
     - iqube
+
+- name: Prepare controller nodes for iqube
+  hosts: iqube_controller
+  roles:
+    - iqube_controller
+  tags:
+    - controller
 
 - name: Install fuzzball-cli
   hosts: iqube_admin

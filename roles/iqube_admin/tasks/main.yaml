@@ -39,6 +39,8 @@
 - name: Generate ssh key for IQube
   community.crypto.openssh_keypair:
     path: /root/iqube/id_ssh
+  register:
+    iqube_ssh
 
 - name: Configure iqube.yaml
   ansible.builtin.template:

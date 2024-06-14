@@ -2,24 +2,16 @@ terraform {
   required_providers {
     vultr = {
       source  = "vultr/vultr"
-      version = "2.11.0"
+      version = "2.21.0"
     }
   }
 }
 
-variable "vultr_api_key" {
-  type     = string
-  nullable = false
-}
-
 provider "vultr" {
-  api_key     = "${var.vultr_api_key}"
-  rate_limit  = 700
-  retry_limit = 3
+  api_key     = "${var.VULTR_API_KEY}"
 }
 
-variable "vpc_id" {
-  type     = string
+variable "VULTR_API_KEY" {
   nullable = false
 }
 

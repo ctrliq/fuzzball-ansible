@@ -14,6 +14,6 @@ resource "vultr_instance" "compute" {
   script_id         = vultr_startup_script.ipxeNodes.id
   os_id             = 448 # rocky linux
   hostname          = "${var.prefix}-compute${count.index+1}"
-  vpc_ids           = ["${var.vpc_id}"]
+  vpc2_ids          = [vultr_vpc2.cluster_net.id]
   ssh_key_ids       = [vultr_ssh_key.root_ssh_key.id]
 }

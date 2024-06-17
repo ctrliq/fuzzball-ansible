@@ -1,0 +1,4 @@
+mirrors:
+  {{ docker_registry_ip }}:5000:
+    endpoint:
+    - "http://{{ docker_registry_ip }}:5000" # tells RKE2 to use HTTP (not HTTPS)

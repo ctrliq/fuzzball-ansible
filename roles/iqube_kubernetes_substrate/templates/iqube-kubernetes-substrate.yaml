@@ -1,0 +1,42 @@
+# iqube-kubernetes-substrate/iqube.yaml
+
+ssh:
+  profiles:
+    nodes:
+      key: /root/.ssh/id_iqube
+      user: root
+      port: 22
+
+external-registry:
+  enabled: false
+
+cluster:
+  nodes:
+{% for node in groups['controller'] %}
+  - name: {{ node }}
+    roles:
+    - controller
+    - worker
+    ssh:
+      host: {{ hostvars[node]['iqube_ssh_host'] }}
+      profile: nodes
+{% endfor %}
+
+  bootstrap:
+    control-plane-vip: {{ kubernetes_substrate_control_plane_vip }}
+    load-balancer:
+      enabled: true
+      ip-range:
+        start: {{ kubernetes_substrate_ip_range_start }}
+        end: {{ kubernetes_substrate_ip_range_end }}
+
+  provisioners:
+  - image: /usr/local/share/iqube/{{ fuzzball_stack | basename | replace(':', '_') }}.sif
+    config:
+      tls:
+        self-signed: true
+      services:
+        fuzzball:
+          sharedfs-directory: /fuzzball/shared
+          schedule:
+            strategy: "greedy"

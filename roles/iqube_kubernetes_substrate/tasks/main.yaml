@@ -1,0 +1,30 @@
+---
+
+- name: Create IQube context directory for kubernetes-substrate
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+  - /root/iqube-kubernetes-substrate
+
+- name: Pull IQube deployment artifact for kubernetes-substrate
+  ansible.builtin.command:
+    cmd: "apptainer pull {{ item }}"
+    chdir: "/usr/local/share/iqube"
+    creates: "/usr/local/share/iqube/{{ item | basename | replace(':', '_') }}.sif"
+  loop:
+  - "{{ kubernetes_substrate }}"
+
+- name: Configure iqube.yaml for kubernetes-substrate
+  ansible.builtin.template:
+    src: iqube-kubernetes-substrate.yaml
+    dest: /root/iqube-kubernetes-substrate/iqube.yaml
+    mode: 0644
+    force: false
+
+- name: Initialize kubernetes-substrate IQube context
+  ansible.builtin.command:
+    cmd: "iqube new --context kubernetes-substrate /usr/local/share/iqube/{{ kubernetes_substrate | basename | replace(':', '_') }}.sif"
+    chdir: /root/iqube-kubernetes-substrate
+    creates: /root/iqube-kubernetes-substrate/config

@@ -1,5 +1,8 @@
 ---
 
+- name: Enable fuzzball subscription
+  ansible.builtin.command: mtn dnf enable fuzzball
+
 - name: Install fuzzball cli
   ansible.builtin.package:
     name: fuzzball-cli

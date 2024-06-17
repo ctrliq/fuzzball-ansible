@@ -1,0 +1,6 @@
+---
+
+- name: Restart fuzzball-substrate
+  ansible.builtin.service:
+    name: fuzzball-substrate
+    state: restarted

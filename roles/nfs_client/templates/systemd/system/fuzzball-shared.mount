@@ -1,0 +1,13 @@
+[Unit]
+Description=Mount NFS Share
+Requires=remote-fs.target network-online.target
+After=remote-fs.target network-online.target
+
+[Mount]
+What={{ iqube_nfs_mount }}
+Where=/fuzzball/shared
+Type=nfs
+Options=defaults
+
+[Install]
+WantedBy=multi-user.target

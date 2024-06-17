@@ -1,0 +1,120 @@
+- name: Install PostgreSQL
+  ansible.builtin.package:
+    name: postgresql-server
+    state: present
+
+- name: Initialize PostgreSQL
+  ansible.builtin.command:
+    cmd: /usr/bin/postgresql-setup --initdb
+    creates: /var/lib/pgsql/data/postgresql.conf
+
+- name: Configure PostgreSQL authentication types
+  ansible.builtin.copy:
+    src: pg_hba.conf
+    dest: /var/lib/pgsql/data/pg_hba.conf
+  notify: Reload postgresql
+
+- name: Start PostgreSQL
+  ansible.builtin.service:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: Install python3-psycopg2
+  ansible.builtin.package:
+    name: python3-psycopg2
+    state: present
+
+- name: Create keycloak database user
+  community.postgresql.postgresql_user:
+    db: keycloak
+    name: keycloak
+    password: "{{ KC_DB_PASSWORD }}"
+  become: yes
+  become_user: postgres
+
+- name: Create keycloak database
+  community.postgresql.postgresql_db:
+    name: keycloak
+    owner: keycloak
+    state: present
+  become: yes
+  become_user: postgres
+
+- name: Install nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+- name: Configure nginx proxy
+  ansible.builtin.copy:
+    src: nginx/default.d/proxy.conf
+    dest: /etc/nginx/default.d/proxy.conf
+  notify: Reload nginx
+
+- name: Start nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: Allow nginx to access the network for reverse proxy
+  ansible.posix.seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true
+
+- name: Install certbot
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+  - certbot
+  - python3-certbot-nginx
+
+- name: Permit public http traffic for certbot verification
+  ansible.builtin.firewalld:
+    zone: public
+    service: http
+    immediate: true
+    permanent: true
+    state: enabled
+
+- name: Generate an HTTPS certificate with certbot
+  ansible.builtin.command:
+    cmd: certbot -n --agree-tos --email "{{ keycloak_certbot_email }}" --nginx --domains "{{ keycloak_certbot_domain }}"
+    creates: "/etc/letsencrypt/live/{{ keycloak_certbot_domain }}"
+  notify: Reload nginx
+
+- name: Trust public IP addresses of the known nodes
+  ansible.builtin.firewalld:
+    zone: trusted
+    source: "{{ hostvars[item]['ansible_default_ipv4']['address'] }}/32"
+    immediate: true
+    permanent: true
+    state: enabled
+  loop: "{{ groups['all'] }}"
+  when: hostvars[item]['ansible_default_ipv4'] is defined
+
+- name: Run Keycloak container
+  containers.podman.podman_container:
+    name: keycloak
+    network: host
+    image: quay.io/keycloak/keycloak:22.0
+    state: started
+    command: start-dev
+    env:
+      KC_DB: "{{ KC_DB }}"
+      KC_DB_URL_DATABASE: "{{ KC_DB_URL_DATABASE }}"
+      KC_DB_URL_HOST: "{{ KC_DB_URL_HOST }}"
+      KC_DB_URL_PORT: "{{ KC_DB_URL_PORT }}"
+      KC_DB_USERNAME: "{{ KC_DB_USERNAME }}"
+      KC_DB_PASSWORD: "{{ KC_DB_PASSWORD }}"
+      KEYCLOAK_ADMIN: "{{ KEYCLOAK_ADMIN }}"
+      KEYCLOAK_ADMIN_PASSWORD: "{{ KEYCLOAK_ADMIN_PASSWORD }}"
+      KC_HTTP_RELATIVE_PATH: "{{ KC_HTTP_RELATIVE_PATH }}"
+      KC_HOSTNAME_URL: "{{ KC_HOSTNAME_URL }}"
+      KC_HOSTNAME_ADMIN_URL: "{{ KC_HOSTNAME_ADMIN_URL }}"
+      KC_HOSTNAME_STRICT: "{{ KC_HOSTNAME_STRICT }}"
+      KC_PROXY_HEADERS: "{{ KC_PROXY_HEADERS }}"
+      DEBUG: true

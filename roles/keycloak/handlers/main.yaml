@@ -1,0 +1,9 @@
+- name: Reload nginx
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded
+
+- name: Reload postgresql
+  ansible.builtin.service:
+    name: postgresql
+    state: reloaded

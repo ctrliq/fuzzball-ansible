@@ -1,52 +1,168 @@
-## Provisioning hosts for an iqube deployment of fuzzball
+# iqube-ansible deployment automation
+
+`iqube-ansible` automates the process of deploying Fuzzball test
+environments with IQube, and [includes Terraform code for provisioning
+necessary test resources on Vultr.][vultr]
+
+[vultr]: vultr/README.md
+
+
+## Prepare an inventory
+
+This guide assumes that your host inventory is recorded in
+`hosts.yaml`. Start a new inventory by copying from the provided
+example.
 
     cp hosts.yaml-example hosts.yaml # customize hosts.yaml
-    ansible-playbook setup-iqube.yaml --inventory hosts.ini \
-        --extra-vars="oauth2accesstoken=$(gcloud --quiet auth print-access-token)"
+    
+If your hosts are not defined by name in DNS or `.ssh/config`, define
+their IP address with `ansible_host`.
+
+For more general information, read [How to build your
+inventory][ansible_inventory].
+
+[ansible_inventory]: https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html
 
 
-## Generating an ssh key
+## kubernetes-substrate
 
-iqube requires passwordless ssh connectivity between the admin host
-and the kubernetes cluster nodes.
+A default IQube deployment of Fuzzball targets a Kubernetes cluster
+deployed on top of Fuzzball Substrate.
 
-    ssh-keygen -t ed25519 -C 'iqube' -f ~/.ssh/iqube -N ''
+### Inventory variables
+
+* Identify the `cluster_interface` for each admin and controller
+  node. (Interface name, not IP address. Allows firewalld to be
+  appropriately configured.)
+* Identify the `public_interface` for each controller and compute
+  node. (Interface name, not IP address. Allows firewalld to be
+  appropriately configured.)
+  
+Also check, define, and/or update variables in `hosts.yaml` as
+necessary. In particular, review variables in the "All deployments"
+and "kubernetes-substrate deployments" sections.
+
+### Playbooks
+
+A kubernetes-substrate deployment uses the following playbooks:
+
+* `setup-iqube.yaml`
+  * installs IQube on admin hosts
+  * initializes a kubernetes-substrate IQube context on admin hosts at
+    `/root/iqube-kubernetes/substrate`
+  * exports an NFS share from admin hosts
+  * starts standalone Fuzzball Substrate on controller hosts
+* `setup-fuzzball.yaml`
+  * installs the Fuzzball CLI
+  * starts Fuzzball Substrate on compute hosts
+  
+
+When executing playbooks, provide a value for `mtn_access_key` to
+allow packages and deployment artifacts to be fetched from Mountain.
+
+```shell
+
+ansible-playbook setup-iqube.yaml --inventory hosts.ini \
+    --extra-vars="mtn_access_key=<key>"
+
+ansible-playbook setup-fuzzball.yaml --inventory hosts.ini \
+    --extra-vars="mtn_access_key=<key>"
+```
+
+### See also
+
+* [Fuzzball Cluster Admin Quick Start][fuzzball-admin-docs]
+
+[fuzzball-admin-docs]: https://integration.ciq.dev/docs/cluster-admin-guide/cluster-admin-quickstart/
 
 
-## Artifacts
+## RKE2
 
-Artifacts required for deployment should be placed in the `artifacts/`
-directory.
+IQube may also deploy Fuzzball into an existing RKE2 cluster using
+`kubernetes-bootstrap`.
 
-**iqube** can be pulled with oras.
+### Inventory variables
 
-    oras pull us-west1-docker.pkg.dev/fuzzball-dev/iqube/iqube-packages:v1.0.0-rc-3
+In addition to the host variables defined for "Prepare an inventory"
+and the `cluster_interface` and `public_interface` variables defined
+in the "kubernetes-substrate" section, also check, define, and/or
+update variables in `hosts.yaml` in the "kubernetes-bootstrap / RKE2
+deployments" section.
 
-Available artifacts can be listed with `gcloud`.
+### Playbooks
 
-    gcloud artifacts docker tags list us-west1-docker.pkg.dev/fuzzball-dev/iqube/iqube-packages
+In addition to the playbooks from the "kubernetes-substrate" section,
+a kubernetes-bootstrap deployment uses the following playbooks:
 
-**fuzzball-substrate** packages can be pulled with oras.
+* `setup-rke2.yaml`
+  * installs and initializes RKE2 on controller hosts
+  * installs IQube on controller hosts (because the provided
+    kubernetes-bootstrap `iqube.yaml` references local
+  * initializes a kubernetes-bootstrap IQube context on controller
+    hosts at `/root/iqube-kubernetes-bootstrap`
+  
+(`setup-rke2.yaml` does not create a single multi-node cluster if more
+than one control node is provided: each provided control node is its
+own single-node cluster.)
 
-    oras pull us-west1-docker.pkg.dev/fuzzball-dev/fuzzball/fuzzball-substrate-packages:v1.2.7-rc-28
 
-Available artifacts can be listed with `gcloud`.
+```shell
 
-    gcloud artifacts docker tags list us-west1-docker.pkg.dev/fuzzball-dev/fuzzball/fuzzball-substrate-packages
+ansible-playbook setup-iqube.yaml --inventory hosts.ini \
+    --extra-vars="mtn_access_key=<key>"
 
-Other artifacts are pulled by Ansible directly.
+ansible-playbook setup-fuzzball.yaml --inventory hosts.ini \
+    --extra-vars="mtn_access_key=<key>"
+    
+ansible-playbook setup-rke2.yaml --inventory hosts.ini \
+    --extra-vars="mtn_access_key=<key>"
+```
 
-    apptainer pull oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-21
-    apptainer pull oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:v1.2.7-rc-21
+kubernetes-bootstrap is deployed from an RKE2 control node; so this
+playbook also deploys IQube to the control node.
 
-And their artifacts can also be listed with `gcloud`.
+If the database fails to provision during `iqube provision up`, run
 
-    gcloud artifacts docker tags list us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack
-    gcloud artifacts docker tags list us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate
+    restorecon /var/lib/fuzzball/compute
 
-Or the CLI with `curl`.
+and try again.
 
-    curl -LO https://artifacts.ciq.dev/fuzzball/builds/fuzzball-v1.2.7-rc-22.linux-amd64.rpm
-    curl -L https://artifacts.ciq.dev/fuzzball/builds/
+### See also
 
-Do not commit artifacts to this repository.
+* [Deploying a local RKE2 environment for Fuzzball deployment testing][deploy-rke2]
+* [Deploying Fuzzball Orchestrate on an existing RKE2 cluster with IQube][fuzzball-on-rke2]
+
+[deploy-rke2]: https://ciqinc.atlassian.net/wiki/spaces/ENG/pages/684720192/Deploying+a+local+RKE2+environment+for+Fuzzball+deployment+testing
+[fuzzball-on-rke2]: https://ciqinc.atlassian.net/wiki/spaces/ENG/pages/684883988/Deploying+Fuzzball+Orchestrate+on+an+existing+RKE2+cluster+with+IQube
+
+
+## Keycloak
+
+Fuzzball may also use an external Keycloak. The `setup-keycloak.yaml`
+playbook provisions Keycloak onto admin hosts.
+
+    ansible-playbook setup-keycloak.yaml --inventory hosts.ini \
+        --extra-vars="mtn_access_key="
+        
+See the "Keycloak" section of `hosts.yaml` for configuration
+parameters.
+
+
+## Notes
+
+- Changes to interface zones cannot be made permanent because of
+  configuration conflicts between cloud-init, NetworkManager, and
+  firewalld. As such, these playbooks make ephemeral firewalld changes
+  only, and must be re-run after reboot.
+
+
+## To do
+
+- Update generated iqube.yaml to use external Keycloak if provisioned
+- why does RKE2 database fail to provision / restorecon not work?
+- provision provider build env
+  - direnv (on admin)
+  - bazelisk (on admin)
+- configure default nfs storage
+  - ephemeral
+  - persistent

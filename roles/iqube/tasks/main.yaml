@@ -1,0 +1,41 @@
+---
+
+- name: Create directory for IQube ssh key
+  ansible.builtin.file:
+    path: /root/.ssh
+    state: directory
+    mode: 0750
+
+- name: Generate ssh key for IQube
+  community.crypto.openssh_keypair:
+    path: /root/.ssh/id_iqube
+  register:
+    iqube_ssh
+
+- name: Enable IQube subscription
+  ansible.builtin.command: mtn dnf enable iqube
+
+- name: Install IQube
+  ansible.builtin.package:
+    name: iqube
+    state: present
+
+- name: Log into Mountain container registry
+  ansible.builtin.command:
+    cmd: apptainer registry login --username=ciq --password-stdin oras://repository.ciq.com
+    stdin: "{{ mtn_access_key }}"
+  when: mtn_access_key is defined
+
+- name: Create directory for IQube deployment artifacts
+  ansible.builtin.file:
+    path: /usr/local/share/iqube
+    state: directory
+    mode: 0755
+
+- name: Pull IQube deployment artifact for fuzzball-stack
+  ansible.builtin.command:
+    cmd: "apptainer pull {{ item }}"
+    chdir: "/usr/local/share/iqube"
+    creates: "/usr/local/share/iqube/{{ item | basename | replace(':', '_') }}.sif"
+  loop:
+  - "{{ fuzzball_stack }}"

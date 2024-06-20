@@ -1,0 +1,22 @@
+---
+
+- name: Install CIQ public release repository
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: true
+  loop:
+  - https://repository.ciq.com/ciq-public-release.rpm
+
+- name: Install CIQ mountain
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+  - epel-release
+  - mtn
+
+- name: Enroll in CIQ mountain
+  ansible.builtin.command:
+    cmd: "mtn enroll {{ mtn_access_key }}"
+    creates: /etc/ciq/mountain/config.json

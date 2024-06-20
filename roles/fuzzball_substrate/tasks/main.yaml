@@ -1,0 +1,34 @@
+---
+
+- name: Enable fuzzball-orchestrate subscription
+  ansible.builtin.command: mtn dnf enable fuzzball-orchestrate
+
+- name: Install fuzzball-substrate-orchestrate
+  ansible.builtin.package:
+    name: fuzzball-substrate-orchestrate
+    state: present
+
+- name: Configure fuzzball-substrate
+  ansible.builtin.template:
+    src: fuzzball-substrate.env
+    dest: /etc/default/fuzzball-substrate.env
+  notify: Restart fuzzball-substrate
+
+- name: Set default zone to 'trusted'
+  ansible.builtin.command: firewall-cmd --set-default-zone=trusted
+  register: default_zone_set
+  changed_when:
+  - '"ZONE_ALREADY_SET" not in default_zone_set.stderr'
+
+- name: Add public interface to public zone
+  ansible.builtin.firewalld:
+    zone: public
+    interface: "{{ public_interface }}"
+    immediate: true
+    permanent: false
+    state: enabled
+
+- name: Start Fuzzball Substrate
+  ansible.builtin.service:
+    name: fuzzball-substrate
+    state: started

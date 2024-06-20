@@ -1,0 +1,4 @@
+---
+
+- name: restorecon /var/lib/fuzzball/compute
+  ansible.builtin.command: restorecon -irv /var/lib/fuzzball/compute

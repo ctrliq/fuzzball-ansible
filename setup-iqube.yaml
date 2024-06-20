@@ -1,29 +1,23 @@
 ---
 
-- name: Prepare shared storage NFS server
-  hosts: iqube_nfs_server
+- name: Install mountain
+  hosts: all
   roles:
-    - iqube_nfs_server
-  tags:
-    - nfs
+  - mountain
 
-- name: Install iqube
-  hosts: iqube_admin
+- name: NFS export /srv/fuzzball/shared from admin
+  hosts: admin
   roles:
-    - iqube_admin
-  tags:
-    - iqube
+  - nfs_server
 
-- name: Prepare controller nodes for iqube
-  hosts: iqube_controller
+- name: Install IQube and fetch deployment artifacts
+  hosts: admin
   roles:
-    - iqube_controller
-  tags:
-    - controller
+  - iqube
+  - iqube_kubernetes_substrate
 
-- name: Install fuzzball-cli
-  hosts: iqube_admin
+- name: Prepare fuzzball-substrate standalone for kubernetes-substrate
+  hosts: controller
   roles:
-    - fuzzball_cli
-  tags:
-    - fuzzball
+  - nfs_client
+  - kubernetes_substrate_controller

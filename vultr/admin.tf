@@ -13,6 +13,6 @@ resource "vultr_instance" "admin" {
   region            = "ewr"
   os_id             = 448 # rocky linux
   hostname          = "${var.prefix}-admin${count.index+1}"
-  vpc2_ids          = [vultr_vpc2.cluster_net.id]
+  vpc_ids           = [local.cluster_vpc_id]
   ssh_key_ids       = [vultr_ssh_key.root_ssh_key.id]
 }

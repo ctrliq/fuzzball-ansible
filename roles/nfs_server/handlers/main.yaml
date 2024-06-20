@@ -1,0 +1,4 @@
+---
+
+- name: Export NFS
+  ansible.builtin.command: exportfs -a

@@ -1,87 +1,104 @@
 all:
   vars:
-    # iqube bootstraps a kubernetes-on-substrate cluser, and then
-    # provisions fuzzball-orchestrate in that cluster.
-    iqube_rpm: artifacts/iqube-1.0.0~rc-4.x86_64.rpm
+    ansible_user: root
 
-    # The virtual IP that the iqube kubernetes cluster will use for
-    # control-plane traffic.
-    iqube_control_plane_vip: 10.0.0.99
+    ##
+    #  All deployments
+    #
 
-    # The start and end of the range that the iqube kubernetes cluster
-    # will use for microservices.
-    iqube_ip_range_start: 10.0.0.100
-    iqube_ip_range_end: 10.0.0.199
-
-    # fuzzball-orchestrate uses shared storage to communicate configuration to fuzzball-substrate.
-    iqube_nfs_mount: admin1:/srv/fuzzball/shared
-
-    # The subnet to which the provisioned NFS server will export the shared file system.
+    # The subnet to which the provisioned NFS server will export the
+    # shared file system.
     iqube_nfs_subnet: 10.0.0.0/24
 
-    # The kubernetes-substrate container provides the microservices
-    # that will be used to bootstrap the kubernetes-on-substrate
-    # cluster.
-    iqube_kubernetes_substrate: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/kubernetes-substrate:v1.2.7-rc-27-cdaaf2f4
+    # Fuzzball Orchestrate uses shared storage to communicate
+    # configuration to fuzzball-substrate.
+    iqube_nfs_mount: admin1:/fuzzball/shared
 
-    # The fuzzball-stack container provides the microservices that
-    # will be used to provision fuzzball-orchestrate on the bootstrapped
+    # The fuzzball-stack image provides the microservices that will be
+    # used to provision fuzzball-orchestrate on the bootstrapped
     # kubernetes cluster.
-    iqube_fuzzball_stack: oras://us-west1-docker.pkg.dev/fuzzball-dev/iqube/fuzzball-stack:v1.2.7-rc-27-cdaaf2f4
+    # fuzzball_stack: oras://repository.ciq.com/iqube/iqube-images/fuzzball-stack:VERSION
 
-    # fuzzball-substrate is a container and virtual machine runtime
-    # and serves as the agent for fuzzball-orchestrate.
-    fuzzball_substrate_rpm: artifacts/fuzzball-substrate-v1.2.7-rc-28.el8.amd64.rpm
+    ##
+    #  kubernetes-substrate deployments
+    #
 
-    # iqube uses ssh to control the iqube_controller hosts from the
-    # iqube_admin host.
-    iqube_ssh_private_key: ~/.ssh/iqube
-    iqube_ssh_public_key: ~/.ssh/iqube.pub
+    # The virtual IP that the kubernetes-substrate cluster will use
+    # for control-plane traffic.
+    kubernetes_substrate_control_plane_vip: 10.0.0.99
 
-    # The fuzzball CLI provides user and administrative access to
-    # fuzzball from a command-line. It will be installed on
-    # iqube_admin, but can be installed anywhere with sufficient
-    # network access.
-    fuzzball_cli_rpm: https://artifacts.ciq.dev/fuzzball/builds/fuzzball-v1.2.7-rc-22.linux-amd64.rpm
+    # The start and end of the range that the kubernetes-substrate
+    # cluster may use for microservices.
+    kubernetes_substrate_ip_range_start: 10.0.0.100
+    kubernetes_substrate_ip_range_end: 10.0.0.199
+
+    # The kubernetes-substrate image provides the microservices that
+    # will be used to bootstrap the kubernetes-on-substrate cluster.
+    # kubernetes_substrate: oras://repository.ciq.com/iqube/iqube-images/kubernetes-substrate:VERSION
+
+    ##
+    #  kubernetes-bootstrap / RKE2 deployments
+    #
+
+    # Analogous to `kubernetes_substrate_ip_range_*` above, the start
+    # and end of the range that the RKE2 cluster may use for
+    # microservices.
+    rke2_metallb_pool_addreses:
+    - "10.0.0.99-10.0.0.100"
+
+    # The IP address to use when creating and referencing the Docker
+    # registry through which the `fuzzball-stack` images will be
+    # deployed.
+    docker_registry_ip: 10.0.0.99
+
+    # Where Fuzzball Substrate compute nodes should get their config.
+    # When using kubernetes-bootstrap, change to /fuzzball/shared/substrate/substrate-config.yaml
+    #FB_POLL_CONFIG: /fuzzball/shared/substrate/substrate-config.yaml
+
+    # The kubernetes-bootstrap image supports deploying to an existing
+    # RKE2 environment.
+    # kubernetes_bootstrap: oras://repository.ciq.com/iqube/iqube-images/kubernetes-bootstrap:VERSION
+
+    ##
+    #  Keycloak
+    #
+
+    # The paths that Keycloak should expect to be located at, when
+    # viewed through its nginx proxy.
+    #KC_HTTP_RELATIVE_PATH=/auth
+    KC_HOSTNAME_URL: https://keycloak.example.net/auth
+    KC_HOSTNAME_ADMIN_URL: https://keycloak.vultr.civilfritz.net/auth
+
+    # The password for the initial keycloak admin.
+    #KEYCLOAK_ADMIN_PASSWORD:
+
+    # The password that keycloak will use to access the database.
+    #KC_DB_PASWORD:
+
+    # Keycloak must be accessed via TLS, so we use certbot to generate
+    # a LetsEncrypt certificate. That registration requires an email
+    # address and the domain to register.
+    #keycloak_certbot_email
+    #keycloak_certbot_domain
 
   children:
-    # The iqube_admin host is a formal definition of an administrative
-    # workstation or login node from which the iqube binary is run. It
-    # provides no runtime dependency once fuzzball-orchestrate has
-    # been provisioned, and can otherwise be decommissioned (unless it
-    # is also used as iqube_nfs_server. See below.)
-    iqube_admin:
+    # Formal definition of an administrative workstation or login node
+    # from which the iqube binary is run.
+    admin:
       hosts:
         admin1:
+          cluster_interface:
 
-    # fuzzball-orchesrate uses shared storage fto communicate
-    # configuration to fuzzball-substrate. If no existing NFS server
-    # is available, iqube_nfs_server can be used to configure one.
-    iqube_nfs_server:
-      hosts:
-        admin1:
-
-    # iqube_controller hosts the bootstrapped kubernetes-on-substrate
-    # cluster, onto which fuzzball-orchestrate is provisioned.
-    iqube_controller:
+    # Hosts the bootstrapped kubernetes-substrate cluster, onto which
+    # fuzzball-orchestrate is provisioned.
+    controller:
       hosts:
         ctl1:
-          # The address that iqube will use for ssh conection to the
-          # host.
-          iqube_ssh_host: 10.0.0.1
-
-          # The address that kubernetes and fuzzball-substrate will
-          # use to advertise services.
-          iqube_advertise_address: 10.0.0.1
-        ctl2:
-          iqube_ssh_host: 10.0.0.2
-          iqube_advertise_address: 10.0.0.2
-        ctl3:
-          iqube_ssh_host: 10.0.0.3
-          iqube_advertise_address: 10.0.0.3
+          iqube_ssh_host:
 
     # compute nodes run fuzzball-substrate as an agent of
     # fuzzball-orchestrate, and accept fuzzball jobs for execution.
     iqube_compute:
       hosts:
-        c[1:4]:
+        compute[1:4]:
+          public_interface:

@@ -27,9 +27,9 @@
 
 - name: Create keycloak database user
   community.postgresql.postgresql_user:
-    db: keycloak
     name: keycloak
     password: "{{ KC_DB_PASSWORD }}"
+    state: present
   become: yes
   become_user: postgres
 

@@ -98,7 +98,7 @@ all:
 
     # compute nodes run fuzzball-substrate as an agent of
     # fuzzball-orchestrate, and accept fuzzball jobs for execution.
-    iqube_compute:
+    compute:
       hosts:
         compute[1:4]:
           public_interface:

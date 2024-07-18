@@ -20,7 +20,7 @@
     name: iqube
     state: present
 
-- name: Log into Mountain container registry
+- name: Log into Mountain with Apptainer
   ansible.builtin.command:
     cmd: apptainer registry login --username=ciq --password-stdin oras://repository.ciq.com
     stdin: "{{ mtn_access_key }}"

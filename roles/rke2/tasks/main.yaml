@@ -1,5 +1,6 @@
 ---
 
+# https://docs.rke2.io/known_issues
 - name: Configure NetworkManager to ignore RKE2 interfaces
   ansible.builtin.copy:
     src: NetworkManager/conf.d/rke2-canal.conf
@@ -13,10 +14,20 @@
     value: '8192'
     state: present
 
+# https://docs.rke2.io/known_issues
+- name: Disable firewalld
+  ansible.builtin.service:
+    name: firewalld
+    enabled: false
+    state: stopped
+
 - name: Install RKE2
   ansible.builtin.shell:
     cmd: "curl -sfL https://get.rke2.io | sh -"
     creates: /etc/rancher
+
+- name: restorecon /opt/local-path-provisioner
+  ansible.builtin.command: restorecon -irv /opt/local-path-provisioner
 
 - name: Configure RKE2 cluster IP
   ansible.builtin.template:
@@ -34,110 +45,26 @@
     src: rke2.sh
     dest: /root/rke2.sh
 
-- name: Install python3-kubernetes for Ansible to use
-  ansible.builtin.package:
-    name: python3-kubernetes
-    state: present
-
-- name: Install metallb
-  kubernetes.core.k8s:
-    state: present
-    src: https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
-    kubeconfig: /etc/rancher/rke2/rke2.yaml
-  register: result
-  retries: 5
-  delay: 60
-  until: result.failed is not defined or result.failed == false
-
-- name: Configure metallb pool
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      apiVersion: metallb.io/v1beta1
-      kind: IPAddressPool
-      metadata:
-        name: default-pool
-        namespace: metallb-system
-      spec:
-        addresses: "{{ rke2_metallb_pool_addresses }}"
-    kubeconfig: /etc/rancher/rke2/rke2.yaml
-
-- name: Configure metallb advertisement
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      apiVersion: metallb.io/v1beta1
-      kind: L2Advertisement
-      metadata:
-        name: default-advertisement
-        namespace: metallb-system
-      spec:
-        ipAddressPools:
-        - default-pool
-        interfaces:
-        - "{{ cluster_interface }}"
-    kubeconfig: /etc/rancher/rke2/rke2.yaml
-
-- name: Create a namespace for the docker registry
-  kubernetes.core.k8s:
-    name: docker-registry
-    api_version: v1
-    kind: Namespace
-    state: present
-    kubeconfig: /etc/rancher/rke2/rke2.yaml
-
-- name: Deploy a local docker registry
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        labels:
-          run: registry
-        name: registry
-        namespace: docker-registry
-      spec:
-        replicas: 1
-        selector:
-          matchLabels:
-            run: registry
-        template:
-          metadata:
-            labels:
-              run: registry
-          spec:
-            containers:
-            - name: registry
-              image: registry:2
-              ports:
-              - containerPort: 5000
-    kubeconfig: /etc/rancher/rke2/rke2.yaml
-
-- name: Local docker registry service
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Service
-      metadata:
-        name: registry-service
-        namespace: docker-registry
-      spec:
-        type: LoadBalancer
-        selector:
-          run: registry
-        ports:
-        - name: registry-tcp
-          protocol: TCP
-          port: 5000
-          targetPort: 5000
-        loadBalancerIP: "{{ docker_registry_ip }}"
-    kubeconfig: /etc/rancher/rke2/rke2.yaml
-  register: local_docker_registry_service
-
-- name: Configure RKE2 to use local docker registry
-  ansible.builtin.template:
-    src: rancher/rke2/registries.yaml
-    dest: /etc/rancher/rke2/registries.yaml
-  notify: Restart rke2-server
+# - name: Disable RKE2 ingress hostPorts
+#   kubernetes.core.k8s:
+#     state: present
+#     apply: true
+#     definition:
+#       apiVersion: apps/v1
+#       kind: DaemonSet
+#       metadata:
+#         name: rke2-ingress-nginx-controller
+#         namespace: kube-system
+#       spec:
+#         template:
+#           spec:
+#             containers:
+#             - name: rke2-ingress-nginx-controller
+#               ports:
+#               - containerPort: 80
+#                 name: http
+#                 hostPort: null
+#               - containerPort: 443
+#                 name: https
+#                 hostPort: null
+#     kubeconfig: /etc/rancher/rke2/rke2.yaml

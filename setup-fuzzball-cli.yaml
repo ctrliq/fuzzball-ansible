@@ -1,0 +1,8 @@
+---
+
+- name: Install Fuzzball CLI
+  hosts: all
+  roles:
+  - mountain
+  - fuzzball_cli
+  tags: cli

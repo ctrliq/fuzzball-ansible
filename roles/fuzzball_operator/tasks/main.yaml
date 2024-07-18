@@ -1,0 +1,71 @@
+---
+
+# Waiting for https://github.com/ansible-collections/kubernetes.core/issues/578
+- name: Log into Mountain with helm
+  ansible.builtin.command:
+    cmd: helm registry login repository.ciq.com --username ciq --password-stdin
+    stdin: "{{ mtn_access_key }}"
+  when: mtn_access_key is defined
+
+- name: Install Fuzzball operator
+  kubernetes.core.helm:
+    name: fuzzball-operator
+    state: present
+    chart_ref: "{{ fuzzball_operator_chart }}"
+    chart_version: "{{ fuzzball_operator_version }}"
+    namespace: fuzzball-system
+    create_namespace: true
+    values:
+      image:
+        repository: "{{ fuzzball_operator_image }}"
+        tag: "{{ fuzzball_operator_version }}"
+      imagePullSecrets:
+        name: "repository-ciq-com"
+        inline:
+          registry: repository.ciq.com
+          username: ciq
+          password: "{{ mtn_access_key }}"
+    kubeconfig: /etc/rancher/rke2/rke2.yaml
+
+- name: Deploy Fuzzball
+  kubernetes.core.k8s:
+    state: present
+    namespace: default
+    definition:
+      apiVersion: deployment.ciq.com/v1alpha1
+      kind: Fuzzball
+      metadata:
+        labels:
+          app.kubernetes.io/name: fuzzball
+          app.kubernetes.io/instance: fuzzball-sample
+          app.kubernetes.io/part-of: fuzzball
+          app.kubernetes.io/managed-by: kustomize
+          app.kubernetes.io/created-by: fuzzball
+        name: fuzzball-sample
+      spec:
+        image:
+          repository: repository.ciq.com/fuzzball-testing/images
+          username: ciq
+          password: "{{ mtn_access_key }}"
+          exclusive: false
+        fuzzball:
+          audit:
+            localStorage: true
+        database:
+          create:
+            enableDebugPod: true
+            credentials:
+              user: postgres
+              password: postgres
+        kyverno:
+          create: {}
+        tls:
+          create: {}
+        ingress:
+          create:
+            domain: ciq.local
+        keycloak:
+          create:
+            createDatabase: true
+            realmId: e700253c-8ce8-4e36-a420-1e4cab4cb7ef
+    kubeconfig: /etc/rancher/rke2/rke2.yaml

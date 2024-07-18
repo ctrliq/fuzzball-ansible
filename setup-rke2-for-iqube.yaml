@@ -1,0 +1,27 @@
+---
+
+- name: Prepare rke2 cluster
+  hosts: controller
+  pre_tasks:
+  - name: Install python3-kubernetes for Ansible to use
+    ansible.builtin.package:
+      name: python3-kubernetes
+      state: present
+  roles:
+  - mountain
+  - rke2
+  - metallb
+  - iqube
+  - iqube_kubernetes_bootstrap
+  - docker_registry
+  post_tasks:
+  - name: Configure RKE2 to use local docker registry
+    ansible.builtin.template:
+      src: rancher/rke2/registries.yaml
+      dest: /etc/rancher/rke2/registries.yaml
+    notify: Restart rke2-server
+  handlers:
+  - name: Restart rke2-server
+    ansible.builtin.service:
+      name: rke2-server
+      state: restarted

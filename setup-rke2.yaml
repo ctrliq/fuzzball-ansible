@@ -1,8 +1,0 @@
----
-
-- name: Prepare rke2 cluster
-  hosts: controller
-  roles:
-  - rke2
-  - iqube
-  - iqube_kubernetes_bootstrap

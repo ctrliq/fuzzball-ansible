@@ -27,3 +27,11 @@
   retries: 5
   delay: 60
   until: result.failed is not defined or result.failed == false
+
+- name: Create /opt/local-path-provisioner
+  ansible.builtin.file:
+    path: /opt/local-path-provisioner
+    state: directory
+
+- name: restorecon /opt/local-path-provisioner
+  ansible.builtin.command: restorecon -rv /opt/local-path-provisioner

@@ -26,9 +26,6 @@
     cmd: "curl -sfL https://get.rke2.io | sh -"
     creates: /etc/rancher
 
-- name: restorecon /opt/local-path-provisioner
-  ansible.builtin.command: restorecon -irv /opt/local-path-provisioner
-
 - name: Configure RKE2 cluster IP
   ansible.builtin.template:
     src: rancher/rke2/config.yaml

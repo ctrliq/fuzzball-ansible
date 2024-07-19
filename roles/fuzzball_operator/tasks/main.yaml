@@ -27,21 +27,20 @@
           password: "{{ mtn_access_key }}"
     kubeconfig: /etc/rancher/rke2/rke2.yaml
 
-- name: Deploy Fuzzball
+- name: Deploy Fuzzball Orchestrate
   kubernetes.core.k8s:
     state: present
-    namespace: default
+    apply: true
+    namespace: fuzzball-system
     definition:
       apiVersion: deployment.ciq.com/v1alpha1
       kind: Fuzzball
       metadata:
         labels:
-          app.kubernetes.io/name: fuzzball
-          app.kubernetes.io/instance: fuzzball-sample
+          app.kubernetes.io/name: fuzzball-orchestrate
           app.kubernetes.io/part-of: fuzzball
-          app.kubernetes.io/managed-by: kustomize
-          app.kubernetes.io/created-by: fuzzball
-        name: fuzzball-sample
+          app.kubernetes.io/managed-by: ansible
+        name: fuzzball-orchestrate
       spec:
         image:
           repository: repository.ciq.com/fuzzball-testing/images
@@ -67,5 +66,7 @@
         keycloak:
           create:
             createDatabase: true
-            realmId: e700253c-8ce8-4e36-a420-1e4cab4cb7ef
+            realmId: "{{ keycloak_realm }}"
+            username: keycloak
+            password: keycloak
     kubeconfig: /etc/rancher/rke2/rke2.yaml

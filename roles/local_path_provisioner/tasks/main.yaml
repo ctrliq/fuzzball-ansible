@@ -7,7 +7,7 @@
     kubeconfig: /etc/rancher/rke2/rke2.yaml
   register: result
   retries: 5
-  delay: 60
+  delay: 10
   until: result.failed is not defined or result.failed == false
 
 - name: Configure Local Path Provisioner as default
@@ -25,7 +25,7 @@
     kubeconfig: /etc/rancher/rke2/rke2.yaml
   register: result
   retries: 5
-  delay: 60
+  delay: 10
   until: result.failed is not defined or result.failed == false
 
 - name: Create /opt/local-path-provisioner

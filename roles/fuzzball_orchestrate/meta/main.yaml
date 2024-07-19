@@ -1,0 +1,6 @@
+---
+dependencies:
+- role: fuzzball_operator
+- role: rke2
+- role: metallb
+- role: local_path_provisioner

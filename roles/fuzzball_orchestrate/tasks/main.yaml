@@ -42,4 +42,6 @@
             realmId: "{{ fuzzball_orchestrate_keycloak_realm }}"
             username: "{{ fuzzball_orchestrate_keycloak_admin_username }}"
             password: "{{ fuzzball_orchestrate_keycloak_admin_password }}"
+            ingress:
+              hostname: "{{ fuzzball_orchestrate_keycloak_hostname }}"
     kubeconfig: /etc/rancher/rke2/rke2.yaml

@@ -4,3 +4,4 @@ fuzzball_orchestrate_database_user: postgres
 fuzzball_orchestrate_database_password: postgres
 fuzzball_orchestrate_keycloak_admin_username: keycloak
 fuzzball_orchestrate_keycloak_admin_password: keycloak
+fuzzball_orchestrate_keycloak_hostname: null

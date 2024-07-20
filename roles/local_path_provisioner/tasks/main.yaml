@@ -10,24 +10,6 @@
   delay: 10
   until: result.failed is not defined or result.failed == false
 
-- name: Configure Local Path Provisioner as default
-  kubernetes.core.k8s:
-    state: present
-    apply: true
-    definition:
-      apiVersion: storage.k8s.io/v1
-      kind: StorageClass
-      provisioner: rancher.io/local-path
-      metadata:
-        name: local-path
-        annotations:
-          storageclass.kubernetes.io/is-default-class: "true"
-    kubeconfig: /etc/rancher/rke2/rke2.yaml
-  register: result
-  retries: 5
-  delay: 10
-  until: result.failed is not defined or result.failed == false
-
 - name: Create /opt/local-path-provisioner
   ansible.builtin.file:
     path: /opt/local-path-provisioner

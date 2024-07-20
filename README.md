@@ -54,7 +54,21 @@ A kubernetes-substrate deployment uses the following playbooks:
   * starts standalone Fuzzball Substrate on controller hosts
 * `setup-fuzzball.yaml`
   * installs the Fuzzball CLI
-  * starts Fuzzball Substrate on compute hosts
+  * starts standalone Fuzzball Substrate on compute hosts
+* `setup-fuzzball-cli.yaml`
+  * installs the Fuzzball CLI
+* `setup-keycloak.yaml`
+  * installs Keycloak on the admin node for testing external Keycloak
+    support
+* `setup-mountain-edge.yaml`
+  * install Mountain Edge with IQube and kubernetes-substrate on all
+    hosts
+* `setup-rke2-and-fuzzball-with-operator.yaml`
+  * Install RKE2, the Fuzzball Operator, and Fuzzball Orchestrate on
+    control nodes
+* `setup-rke2-for-iqube.yaml`
+  * prepare control nodes with RKE2 for an IQube kubernetes-bootstrap
+    deployment
   
 
 When executing playbooks, provide a value for `mtn_access_key` to

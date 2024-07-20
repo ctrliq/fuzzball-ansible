@@ -20,6 +20,16 @@ all:
     # fuzzball_stack: oras://repository.ciq.com/iqube/iqube-images/fuzzball-stack:VERSION
 
     ##
+    #  Fuzzball Orchestrate as deployed via the Fuzzball operator
+    #
+
+    # fuzzball_orchestrate_domain:
+    # fuzzball_orchestrate_database_password:
+    # fuzzball_orchestrate_keycloak_hostname:
+    # fuzzball_orchestrate_keycloak_realm:
+    # fuzzball_orchestrate_keycloak_admin_password:
+
+    ##
     #  kubernetes-substrate deployments
     #
 

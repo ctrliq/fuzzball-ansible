@@ -22,10 +22,20 @@
           exclusive: false
         fuzzball:
           audit:
+            storage:
+              class: local-path
             localStorage: true
+          log:
+            storage:
+              class: local-path
+          schedule:
+            storage:
+              class: local-path
         database:
           create:
             enableDebugPod: true
+            persistence:
+              class: local-path
             credentials:
               user: "{{ fuzzball_orchestrate_database_user }}"
               password: "{{ fuzzball_orchestrate_database_password }}"

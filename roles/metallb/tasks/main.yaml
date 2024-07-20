@@ -6,7 +6,7 @@
     src: https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
     kubeconfig: /etc/rancher/rke2/rke2.yaml
   register: result
-  retries: 5
+  retries: 10
   delay: 10
   until: result.failed is not defined or result.failed == false
 
@@ -23,7 +23,7 @@
         addresses: "{{ rke2_metallb_pool_addresses }}"
     kubeconfig: /etc/rancher/rke2/rke2.yaml
   register: result
-  retries: 5
+  retries: 10
   delay: 10
   until: result.failed is not defined or result.failed == false
 

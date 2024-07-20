@@ -6,7 +6,7 @@
     src: https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.28/deploy/local-path-storage.yaml
     kubeconfig: /etc/rancher/rke2/rke2.yaml
   register: result
-  retries: 5
+  retries: 10
   delay: 10
   until: result.failed is not defined or result.failed == false
 

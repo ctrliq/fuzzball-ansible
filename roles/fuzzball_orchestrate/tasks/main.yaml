@@ -41,6 +41,24 @@
           schedule:
             storage:
               class: local-path
+            gossipService:
+              type: NodePort
+          dns:
+            externalService:
+              type: NodePort
+              kube:
+                backendGatewayService:
+                  type: LoadBalancer
+                  annotations:
+                    "metallb.universe.tf/allow-shared-ip": "ingress-and-fuzzball"
+          storage:
+            gossipService:
+              type: NodePort
+          workflow:
+            callbackService:
+              type: LoadBalancer
+              annotations:
+                "metallb.universe.tf/allow-shared-ip": "ingress-and-fuzzball"
         database:
           create:
             enableDebugPod: true
@@ -56,6 +74,10 @@
         ingress:
           create:
             domain: "{{ fuzzball_orchestrate_domain }}"
+            proxy:
+              type: LoadBalancer
+              annotations:
+                "metallb.universe.tf/allow-shared-ip": "ingress-and-fuzzball"
         keycloak:
           create:
             createDatabase: true

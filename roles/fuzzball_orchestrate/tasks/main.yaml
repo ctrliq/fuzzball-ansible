@@ -1,5 +1,10 @@
 ---
 
+- name: Install nfs-utils
+  ansible.builtin.package:
+    name: nfs-utils
+    state: present
+
 - name: Deploy Fuzzball Orchestrate
   kubernetes.core.k8s:
     state: present
@@ -21,6 +26,11 @@
           password: "{{ mtn_access_key }}"
           exclusive: false
         fuzzball:
+          substrate:
+            nfs:
+              server: "{{ substrate_nfs_server }}"
+              path: /srv/fuzzball/shared
+              destination: /fuzzball/shared
           audit:
             storage:
               class: local-path

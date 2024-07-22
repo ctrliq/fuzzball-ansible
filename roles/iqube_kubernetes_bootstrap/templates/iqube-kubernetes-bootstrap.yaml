@@ -17,7 +17,7 @@ cluster:
             enabled: true
 
           sharedfs-directory: /fuzzball/shared
-          nfs-shared-path: {{ iqube_nfs_mount }}
+          nfs-shared-path: {{ substrate_nfs_mount }}
 
           schedule:
             strategy: greedy

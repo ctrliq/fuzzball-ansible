@@ -8,11 +8,11 @@ all:
 
     # The subnet to which the provisioned NFS server will export the
     # shared file system.
-    iqube_nfs_subnet: 10.0.0.0/24
+    substrate_nfs_subnet: 10.0.0.0/24
 
     # Fuzzball Orchestrate uses shared storage to communicate
     # configuration to fuzzball-substrate.
-    iqube_nfs_mount: admin1:/fuzzball/shared
+    substrate_nfs_mount: admin1:/fuzzball/shared
 
     # The fuzzball-stack image provides the microservices that will be
     # used to provision fuzzball-orchestrate on the bootstrapped

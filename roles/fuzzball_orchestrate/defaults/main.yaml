@@ -1,7 +1,77 @@
 ---
-fuzzball_orchestrate_domain: fuzzball.local
-fuzzball_orchestrate_database_user: postgres
-fuzzball_orchestrate_database_password: postgres
-fuzzball_orchestrate_keycloak_admin_username: keycloak
-fuzzball_orchestrate_keycloak_admin_password: keycloak
-fuzzball_orchestrate_keycloak_hostname: null
+
+# built-in defaults
+fuzzball_orchestrate_defaults:
+  apiVersion: deployment.ciq.com/v1alpha1
+  kind: Fuzzball
+  metadata:
+    labels:
+      app.kubernetes.io/name: fuzzball-orchestrate
+      app.kubernetes.io/part-of: fuzzball
+      app.kubernetes.io/managed-by: ansible
+    name: fuzzball-orchestrate
+  spec:
+    image:
+      repository: repository.ciq.com/fuzzball-testing/images
+      username: ciq
+      exclusive: false
+    fuzzball:
+      substrate:
+        nfs:
+          path: /srv/fuzzball/shared
+          destination: /fuzzball/shared
+      audit:
+        storage:
+          class: local-path
+        localStorage: true
+      log:
+        storage:
+          class: local-path
+      schedule:
+        storage:
+          class: local-path
+        gossipService:
+          type: NodePort
+      dns:
+        externalService:
+          type: NodePort
+          kube:
+            backendGatewayService:
+              type: LoadBalancer
+              annotations:
+                "metallb.universe.tf/allow-shared-ip": "ingress-and-fuzzball"
+      storage:
+        gossipService:
+          type: NodePort
+      workflow:
+        callbackService:
+          type: LoadBalancer
+          annotations:
+            "metallb.universe.tf/allow-shared-ip": "ingress-and-fuzzball"
+    database:
+      create:
+        enableDebugPod: true
+        persistence:
+          class: local-path
+        credentials:
+          user: postgres
+          password: postgres
+    kyverno:
+      create: {}
+    tls:
+      create: {}
+    ingress:
+      create:
+        proxy:
+          type: LoadBalancer
+          annotations:
+            "metallb.universe.tf/allow-shared-ip": "ingress-and-fuzzball"
+    keycloak:
+      create:
+        createDatabase: true
+        username: keycloak
+        password: keycloak
+
+# user-supplied values that will be recursively combined with
+# fuzzball_orchestrate_defaults
+fuzzball_orchestrate: {}

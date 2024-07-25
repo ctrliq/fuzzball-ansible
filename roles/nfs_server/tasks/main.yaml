@@ -16,6 +16,7 @@
     path: /etc/exports
     regexp: '^/fuzzball/shared '
     line: /srv/fuzzball/shared {{ substrate_nfs_subnet }}(rw,sync,no_subtree_check,no_root_squash)
+  when: substrate_nfs_subnet is defined
   notify: Export NFS
 
 - name: Start nfs-server

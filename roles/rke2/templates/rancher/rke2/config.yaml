@@ -1,1 +1,1 @@
-node-ip: {{ iqube_ssh_host }}  # set to your node's internal IP address
+node-ip: {{ rke2_node_ip }}  # set to your node's internal IP address

@@ -2,72 +2,69 @@ all:
   vars:
     ansible_user: root
 
+    # REQUIRED: A CIQ Mountain access key used to retrieve Fuzzball
+    # installation packages and containers
+    mtn_access_key:
+
     ##
-    #  All deployments
+    #  NFS server
     #
 
     # The subnet to which the provisioned NFS server will export the
     # shared file system.
     substrate_nfs_subnet: 10.0.0.0/24
 
-    # Fuzzball Orchestrate uses shared storage to communicate
+    ##
+    #  Fuzzball Substrate
+    #
+
+    # The NFS share Fuzzball Substrate will read configuration from.
     # configuration to fuzzball-substrate.
     substrate_nfs_mount: admin1:/fuzzball/shared
 
-    # The fuzzball-stack image provides the microservices that will be
-    # used to provision fuzzball-orchestrate on the bootstrapped
-    # kubernetes cluster.
-    # fuzzball_stack: oras://repository.ciq.com/iqube/iqube-images/fuzzball-stack:VERSION
-
     ##
-    #  Fuzzball Orchestrate as deployed via the Fuzzball operator
+    #  Fuzzball Orchestrate
     #
 
-    # fuzzball_orchestrate_domain:
-    # fuzzball_orchestrate_database_password:
-    # fuzzball_orchestrate_keycloak_hostname:
-    # fuzzball_orchestrate_keycloak_realm:
-    # fuzzball_orchestrate_keycloak_admin_password:
+    # The version of Fuzzball Orchestrate to deploy, as defined by the
+    # version of the Fuzzball operator to use. If unspecified, a
+    # default version will be used.
+    # fuzzball_operator_version:
 
-    ##
-    #  kubernetes-substrate deployments
+    # Customizations for the Fuzzball CRD instance that governs the
+    # deployment of Fuzzball Orchestrate.
     #
-
-    # The virtual IP that the kubernetes-substrate cluster will use
-    # for control-plane traffic.
-    kubernetes_substrate_control_plane_vip: 10.0.0.99
-
-    # The start and end of the range that the kubernetes-substrate
-    # cluster may use for microservices.
-    kubernetes_substrate_ip_range_start: 10.0.0.100
-    kubernetes_substrate_ip_range_end: 10.0.0.199
-
-    # The kubernetes-substrate image provides the microservices that
-    # will be used to bootstrap the kubernetes-on-substrate cluster.
-    # kubernetes_substrate: oras://repository.ciq.com/iqube/iqube-images/kubernetes-substrate:VERSION
-
-    ##
-    #  kubernetes-bootstrap / RKE2 deployments
+    # Recommended site configuration parameters are indicated below.
     #
-
-    # Analogous to `kubernetes_substrate_ip_range_*` above, the start
-    # and end of the range that the RKE2 cluster may use for
-    # microservices.
-    rke2_metallb_pool_addreses:
-    - "10.0.0.99-10.0.0.100"
-
-    # The IP address to use when creating and referencing the Docker
-    # registry through which the `fuzzball-stack` images will be
-    # deployed.
-    docker_registry_ip: 10.0.0.99
-
-    # Where Fuzzball Substrate compute nodes should get their config.
-    # When using kubernetes-bootstrap, change to /fuzzball/shared/substrate/substrate-config.yaml
-    #FB_POLL_CONFIG: /fuzzball/shared/substrate/substrate-config.yaml
-
-    # The kubernetes-bootstrap image supports deploying to an existing
-    # RKE2 environment.
-    # kubernetes_bootstrap: oras://repository.ciq.com/iqube/iqube-images/kubernetes-bootstrap:VERSION
+    # https://ciqinc.atlassian.net/wiki/spaces/ENG/pages/786235424/Using+the+Fuzzball+Operator
+    fuzzball_orchestrate:
+      spec:
+        fuzzball:
+          substrate:
+            nfs:
+              server: # IP address of NFS server hosting Fuzzball Substrate config
+          kube:
+            backendGatewayService:
+              metallb.universe.tf/loadBalancerIPs: # preferred external IP address
+          workflow:
+            callbackService:
+              annotations:
+                metallb.universe.tf/loadBalancerIPs: # preferred external IP address
+        ingress:
+          create:
+            domain: # e.g., 10.0.0.99.nip.io
+            proxy:
+              annotations:
+                metallb.universe.tf/loadBalancerIPs: # preferred external IP address
+        keycloak:
+          create:
+            realmId: # Unique UUIDv4, or existing UUIDv4 for external Keycloak
+            ingres:
+              hostname: # e.g., auth.10.0.0.99.nip.io
+        database:
+          create:
+            credentials:
+              password: # database password to use
 
     ##
     #  Keycloak
@@ -92,23 +89,22 @@ all:
     #keycloak_certbot_domain
 
   children:
-    # Formal definition of an administrative workstation or login node
-    # from which the iqube binary is run.
+    # Formal definition of an administrative node that provides NFS or
+    # hosts an external Keycloak.
     admin:
       hosts:
         admin1:
           cluster_interface:
 
-    # Hosts the bootstrapped kubernetes-substrate cluster, onto which
-    # fuzzball-orchestrate is provisioned.
+    # Hosts RKE2 and Fuzzball Orchestrate.
     controller:
       hosts:
         ctl1:
-          iqube_ssh_host:
+          rke2_node_ip:
 
-    # compute nodes run fuzzball-substrate as an agent of
-    # fuzzball-orchestrate, and accept fuzzball jobs for execution.
+    # Compute nodes run Fuzzball Substrate as an agent of Fuzzball
+    # Orchestrate and accept Fuzzball jobs for execution.
     compute:
       hosts:
         compute[1:4]:
-          public_interface:
+          cluster_interface:

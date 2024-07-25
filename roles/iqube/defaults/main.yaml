@@ -1,5 +1,0 @@
----
-
-kubernetes_substrate: oras://repository.ciq.com/iqube/iqube-images/kubernetes-substrate:v2.0.4-be30e766
-fuzzball_stack: oras://repository.ciq.com/iqube/iqube-images/fuzzball-stack:v0.0.1-ga75299a6-be30e766
-kubernetes_bootstrap: oras://repository.ciq.com/iqube/iqube-images/kubernetes-bootstrap:be30e766

@@ -1,0 +1,22 @@
+---
+
+metallb_pool_defaults:
+  apiVersion: metallb.io/v1beta1
+  kind: IPAddressPool
+  metadata:
+    name: default-pool
+    namespace: metallb-system
+
+metallb_pool: {}
+
+metallb_advertisement_defaults:
+  apiVersion: metallb.io/v1beta1
+  kind: L2Advertisement
+  metadata:
+    name: default-advertisement
+    namespace: metallb-system
+  spec:
+    ipAddressPools:
+    - default-pool
+
+metallb_advertisement: {}

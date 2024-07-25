@@ -14,16 +14,10 @@
     dest: /etc/default/fuzzball-substrate.env
   notify: Restart fuzzball-substrate
 
-- name: Set default zone to 'trusted'
-  ansible.builtin.command: firewall-cmd --set-default-zone=trusted
-  register: default_zone_set
-  changed_when:
-  - '"ZONE_ALREADY_SET" not in default_zone_set.stderr'
-
-- name: Add public interface to public zone
+- name: Add cluster interface to trusted zone
   ansible.builtin.firewalld:
-    zone: public
-    interface: "{{ public_interface }}"
+    zone: trusted
+    interface: "{{ cluster_interface }}"
     immediate: true
     permanent: false
     state: enabled

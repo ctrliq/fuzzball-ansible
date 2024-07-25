@@ -14,9 +14,6 @@
   kubernetes.core.k8s:
     state: present
     definition: "{{ metallb_pool_defaults | ansible.builtin.combine(metallb_pool, recursive=true) }}"
-
-      spec:
-        addresses: "{{ rke2_metallb_pool_addresses }}"
     kubeconfig: /etc/rancher/rke2/rke2.yaml
   register: result
   retries: 10

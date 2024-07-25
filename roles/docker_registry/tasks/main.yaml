@@ -39,21 +39,5 @@
 - name: Local docker registry service
   kubernetes.core.k8s:
     state: present
-    definition:
-      apiVersion: v1
-      kind: Service
-      metadata:
-        name: registry-service
-        namespace: docker-registry
-      spec:
-        type: LoadBalancer
-        selector:
-          run: registry
-        ports:
-        - name: registry-tcp
-          protocol: TCP
-          port: 5000
-          targetPort: 5000
-        loadBalancerIP: "{{ docker_registry_ip }}"
+    definition: "{{ docker_registry_service_defaults | ansible.builtin.combine(docker_registry_service, recursive=true) }}"
     kubeconfig: /etc/rancher/rke2/rke2.yaml
-  register: local_docker_registry_service

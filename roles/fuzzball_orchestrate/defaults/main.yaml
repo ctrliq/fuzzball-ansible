@@ -40,7 +40,7 @@ fuzzball_orchestrate_defaults:
             backendGatewayService:
               type: LoadBalancer
               annotations:
-                "metallb.universe.tf/allow-shared-ip": "ingress-and-fuzzball"
+                metallb.universe.tf/allow-shared-ip: "ingress-and-fuzzball"
       storage:
         gossipService:
           type: NodePort
@@ -48,7 +48,7 @@ fuzzball_orchestrate_defaults:
         callbackService:
           type: LoadBalancer
           annotations:
-            "metallb.universe.tf/allow-shared-ip": "ingress-and-fuzzball"
+            metallb.universe.tf/allow-shared-ip: "ingress-and-fuzzball"
     database:
       create:
         enableDebugPod: true
@@ -56,7 +56,6 @@ fuzzball_orchestrate_defaults:
           class: local-path
         credentials:
           user: postgres
-          password: postgres
     kyverno:
       create: {}
     tls:
@@ -66,12 +65,10 @@ fuzzball_orchestrate_defaults:
         proxy:
           type: LoadBalancer
           annotations:
-            "metallb.universe.tf/allow-shared-ip": "ingress-and-fuzzball"
+            metallb.universe.tf/allow-shared-ip: "ingress-and-fuzzball"
     keycloak:
       create:
         createDatabase: true
-        username: keycloak
-        password: keycloak
 
 # user-supplied values that will be recursively combined with
 # fuzzball_orchestrate_defaults

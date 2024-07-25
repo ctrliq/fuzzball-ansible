@@ -1,6 +1,6 @@
 ---
 
-- name: NFS export /srv/fuzzball/shared from admin
+- name: NFS export from admin for Substrate configuration
   hosts: admin
   roles:
   - nfs_server

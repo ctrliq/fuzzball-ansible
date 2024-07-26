@@ -36,7 +36,7 @@ all:
     #
     # Recommended site configuration parameters are indicated below.
     #
-    # https://ciqinc.atlassian.net/wiki/spaces/ENG/pages/786235424/Using+the+Fuzzball+Operator
+    # - https://ciqinc.atlassian.net/wiki/spaces/ENG/pages/786235424/Using+the+Fuzzball+Operator
     fuzzball_orchestrate:
       spec:
         fuzzball:
@@ -65,6 +65,18 @@ all:
           create:
             credentials:
               password: # database password to use
+
+    # Customizations for the default metallb pool that Fuzzball
+    # Orchestrate will use for external services.
+    #
+    # Recommended site configuration parameters are indicated below.
+    #
+    # - https://ciqinc.atlassian.net/wiki/spaces/ENG/pages/786235424/Using+the+Fuzzball+Operator
+    # - https://metallb.universe.tf/
+    metallb_pool:
+      spec:
+        addresses:
+        - # addresses available for use with external services; e.g., "10.0.0.99-10.0.0.100"
 
     ##
     #  Keycloak

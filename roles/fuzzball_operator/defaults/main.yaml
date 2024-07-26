@@ -2,5 +2,5 @@
 
 fuzzball_operator_chart: "oci://repository.ciq.com/fuzzball-testing/images/helm/fuzzball-operator"
 fuzzball_operator_image: "repository.ciq.com/fuzzball-testing/images/fuzzball-operator"
-fuzzball_operator_version: "v0.0.1-g1d27f568"
+fuzzball_operator_version: "v0.0.1-g29ab109f"
 fuzzball_operator_storage_class: "local-path"

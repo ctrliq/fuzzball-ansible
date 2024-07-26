@@ -22,6 +22,9 @@ all:
     # configuration to fuzzball-substrate.
     substrate_nfs_mount: admin1:/fuzzball/shared
 
+    # The config file that Fuzzball Substrate should use.
+    # FB_POLL_CONFIG: /fuzzball/shared/substrate/substrate-config.yaml
+
     ##
     #  Fuzzball Orchestrate
     #
@@ -30,6 +33,15 @@ all:
     # version of the Fuzzball operator to use. If unspecified, a
     # default version will be used.
     # fuzzball_operator_version:
+
+    # The StorageClass that the Fuzzball operator should use.
+    # fuzzball_operator_storage_class: "local-path"
+
+    # The chart Helm should use to install the Fuzzball operator
+    # fuzzball_operator_chart: "oci://repository.ciq.com/fuzzball-testing/images/helm/fuzzball-operator"
+
+    # The image that Helm should use to install the Fuzzball operator
+    # fuzzball_operator_image: "repository.ciq.com/fuzzball-testing/images/fuzzball-operator"
 
     # Customizations for the Fuzzball CRD instance that governs the
     # deployment of Fuzzball Orchestrate.
@@ -82,23 +94,20 @@ all:
     #  Keycloak
     #
 
-    # The paths that Keycloak should expect to be located at, when
-    # viewed through its nginx proxy.
-    #KC_HTTP_RELATIVE_PATH=/auth
-    KC_HOSTNAME_URL: https://keycloak.example.net/auth
-    KC_HOSTNAME_ADMIN_URL: https://keycloak.vultr.civilfritz.net/auth
-
-    # The password for the initial keycloak admin.
-    #KEYCLOAK_ADMIN_PASSWORD:
-
-    # The password that keycloak will use to access the database.
-    #KC_DB_PASWORD:
+    # Environment variables passed to Keycloak.
+    #
+    # For more information, see https://www.keycloak.org/server/all-config
+    # keycloak_env:
+    #   KC_DB_PASSWORD:
+    #   KEYCLOAK_ADMIN_PASSWORD:
+    #   KC_HOSTNAME_URL:
+    #   KC_HOSTNAME_ADMIN_URL:
 
     # Keycloak must be accessed via TLS, so we use certbot to generate
     # a LetsEncrypt certificate. That registration requires an email
     # address and the domain to register.
-    #keycloak_certbot_email
-    #keycloak_certbot_domain
+    # keycloak_certbot_email:
+    # keycloak_certbot_domain:
 
   children:
     # Formal definition of an administrative node that provides NFS or

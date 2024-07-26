@@ -1,11 +1,15 @@
 ---
 
-KC_DB: postgres
-KC_DB_URL_DATABASE: keycloak
-KC_DB_URL_HOST: localhost
-KC_DB_URL_PORT: 5432
-KC_DB_USERNAME: keycloak
-KEYCLOAK_ADMIN: admin
-KC_HOSTNAME_STRICT: false
-KC_PROXY_HEADERS: xforwarded
-KC_HTTP_RELATIVE_PATH: /auth
+keycloak_env_defaults:
+  KC_DB: postgres
+  KC_DB_URL_DATABASE: keycloak
+  KC_DB_URL_HOST: localhost
+  KC_DB_URL_PORT: 5432
+  KC_DB_USERNAME: keycloak
+  KEYCLOAK_ADMIN: admin
+  KC_HOSTNAME_STRICT: false
+  KC_PROXY_HEADERS: xforwarded
+  KC_HTTP_RELATIVE_PATH: /auth
+  DEBUG: true
+
+keycloak_env: {}

@@ -28,7 +28,7 @@
 - name: Create keycloak database user
   community.postgresql.postgresql_user:
     name: keycloak
-    password: "{{ KC_DB_PASSWORD }}"
+    password: "{{ keycloak_env['KC_DB_PASSWORD'] }}"
     state: present
   become: yes
   become_user: postgres
@@ -103,18 +103,4 @@
     image: quay.io/keycloak/keycloak:22.0
     state: started
     command: start-dev
-    env:
-      KC_DB: "{{ KC_DB }}"
-      KC_DB_URL_DATABASE: "{{ KC_DB_URL_DATABASE }}"
-      KC_DB_URL_HOST: "{{ KC_DB_URL_HOST }}"
-      KC_DB_URL_PORT: "{{ KC_DB_URL_PORT }}"
-      KC_DB_USERNAME: "{{ KC_DB_USERNAME }}"
-      KC_DB_PASSWORD: "{{ KC_DB_PASSWORD }}"
-      KEYCLOAK_ADMIN: "{{ KEYCLOAK_ADMIN }}"
-      KEYCLOAK_ADMIN_PASSWORD: "{{ KEYCLOAK_ADMIN_PASSWORD }}"
-      KC_HTTP_RELATIVE_PATH: "{{ KC_HTTP_RELATIVE_PATH }}"
-      KC_HOSTNAME_URL: "{{ KC_HOSTNAME_URL }}"
-      KC_HOSTNAME_ADMIN_URL: "{{ KC_HOSTNAME_ADMIN_URL }}"
-      KC_HOSTNAME_STRICT: "{{ KC_HOSTNAME_STRICT }}"
-      KC_PROXY_HEADERS: "{{ KC_PROXY_HEADERS }}"
-      DEBUG: true
+    env: "{{ keycloak_env_defaults | ansible.builtin.combine(keycloak_env) }}"

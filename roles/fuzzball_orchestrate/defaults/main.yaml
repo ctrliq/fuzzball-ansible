@@ -52,7 +52,7 @@ fuzzball_orchestrate_defaults:
     database:
       create:
         enableDebugPod: true
-        persistence:
+        storage:
           class: local-path
         credentials:
           user: postgres

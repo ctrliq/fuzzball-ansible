@@ -20,7 +20,8 @@ all:
     #
 
     # The NFS share Fuzzball Substrate will read configuration from.
-    # configuration to fuzzball-substrate.
+    # configuration to fuzzball-substrate. (Replace "nfs-server1" with the
+    # address or name of your NFS server.)
     fuzzball_substrate_nfs_mount: nfs-server1:/srv/fuzzball/shared
 
     ##

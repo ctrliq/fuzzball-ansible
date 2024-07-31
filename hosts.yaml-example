@@ -110,6 +110,9 @@ all:
     # keycloak_certbot_domain:
 
   children:
+    # You need to add the name "admin1, ctl1, etc" to your /etc/hosts or
+    # add "ansible_host:" with the IP address under the host
+    # 
     # Formal definition of an administrative node that provides NFS or
     # hosts an external Keycloak.
     fuzzball_nfs_server:

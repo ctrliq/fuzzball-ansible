@@ -2,24 +2,24 @@ output "substrate_nfs_subnet" {
   value = "${vultr_vpc.cluster_net[0].v4_subnet}/${vultr_vpc.cluster_net[0].v4_subnet_mask}"
 }
 
-output "controller_node_ips" {
+output "controller_node_public_ips" {
   description = "The main IPs of the controller nodes"
   value = {
-    for idx, instance in vultr_instance.ctl : "internal_IP_ctl${idx + 1}" => instance.main_ip
+    for idx, instance in vultr_instance.ctl : "public_IP_ctl${idx + 1}" => instance.main_ip
   }
 }
 
-output "admin_instances_public_ip" {
+output "admin_nodes_public_ip" {
   description = "The public IPs of the admin instances"
   value = {
-    for idx, instance in vultr_instance.admin : "internal_IP_admin${idx + 1}" => instance.main_ip
+    for idx, instance in vultr_instance.admin : "public_IP_admin${idx + 1}" => instance.main_ip
   }
 }
 
-output "ctl_instances_public_ip" {
+output "compute_instances_public_ip" {
   description = "The public IPs of the ctl instances"
   value = {
-    for idx, instance in vultr_instance.ctl : "internal_IP_ctl${idx + 1}" => instance.main_ip
+    for idx, instance in vultr_instance.compute : "public_IP_ctl${idx + 1}" => instance.main_ip
   }
 }
 

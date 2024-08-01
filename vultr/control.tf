@@ -10,7 +10,7 @@ resource "vultr_instance" "ctl" {
   tags              = ["${var.tag}"]
   firewall_group_id = "${var.firewall_group_id}"
   plan              = "vc2-6c-16gb"
-  region            = "ewr"
+  region            = var.region
   os_id             = 448 # rocky linux
   hostname          = "${var.prefix}-ctl${count.index+1}"
   vpc_ids           = [local.cluster_vpc2_id]

@@ -149,9 +149,19 @@ while true; do
   fi
 done
 
+###
+#add to check ansible
+
+###
+#Prompt for region 
+#
+/script/create hosst.yaml
 
 ####################################################################################################
 ###### Lets Run Terraform
 
 terraform -chdir=vultr init  #Initialize terraform
 terraform -chdir=vultr apply -var region=$region -var tag="${USERNAME}" -var prefix="${USERNAME}" -var $VULTR_API_KEY -var ssh_public_key=$ssh_public_key -var compute_nodes=$compute_nodes -var control_nodes=$control_nodes -var admin_nodes=$admin_nodes
+
+#
+/script/create hosts.yaml

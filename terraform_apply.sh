@@ -38,23 +38,39 @@ read "Could you please provide your username"
 # Create a SSH key
 # Define the path for the SSH key
 
-
-
-ssh_public_key="$HOME/.ssh/id_ed25519.pub"
-ssh_private_key="$HOME/.ssh/id_ed25519"
-
-# Check if the SSH key already exists
-if [ -f "$ssh_private_key" ] && [ -f "$ssh_public_key" ]; then
-  echo "SSH key pair already exists at: $ssh_private_key and $ssh_public_key"
-  echo "Using existing keys for deployment"
+if [ -f $HOME/.ssh/id_rsa ]; then
+    ssh_private_key="$HOME/.ssh/id_rsa"
+elif [ -f ~/.ssh/id_ecdsa ]; then
+    ssh_private_key="$HOME/.ssh/id_ecdsa"
+elif [ -f ~/.ssh/id_ed25519 ]; then
+    ssh_private_key="$HOME/.ssh/id_ed25519"
 else
-# Generate the SSH key pair using the Ed25519 algorithm
-  ssh-keygen -t ed25519 -f "$ssh_private_key" -N ""
-  echo "SSH key pair created:"
-  echo "Private key: $ssh_private_key"
-  echo "Public key: $ssh_public_key"
-  echo "Using created keys for deployment"
+    ssh_private_key=""
 fi
+
+# Set $ssh_public_key if key exists
+if [ -n "$ssh_private_key" ] && [ -f "$ssh_private_key" ]; then
+    ssh_public_key=$(cat "$ssh_private_key.pub")
+    echo "Using existing SSH key: $ssh_private_key"
+    echo "Public key: $ssh_public_key"
+else
+    echo "No default SSH key found."
+
+    # Prompt user to generate a new SSH key
+    read -p "Do you want to generate a new SSH key? (y/n): " response
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        read -p "Enter the file path to save the new key (default: ~/.ssh/id_ed25519): " key_path
+        key_path=${key_path:-~/.ssh/id_ed25519}
+        ssh-keygen -t ed25519 -f "$key_path" -N ""
+        ssh_public_key=$(cat "$key_path.pub")
+        echo "New SSH key generated: $key_path"
+        echo "Public key: $ssh_public_key"
+    else
+        echo "No SSH key generated."
+        exit 1
+    fi
+fi
+
 
 ####################################################################################################
 #Get amount of nodes to deploy

@@ -37,6 +37,9 @@ read "Could you please provide your username"
 ####################################################################################################
 # Create a SSH key
 # Define the path for the SSH key
+
+
+
 ssh_public_key="$HOME/.ssh/id_ed25519.pub"
 ssh_private_key="$HOME/.ssh/id_ed25519"
 
@@ -54,7 +57,7 @@ else
 fi
 
 ####################################################################################################
-#Get ammount of nodes to deploy
+#Get amount of nodes to deploy
 # Function to check if input is a valid number
 is_number() {
   if [[ $1 =~ ^[0-9]+$ ]]; then
@@ -164,4 +167,4 @@ terraform -chdir=vultr init  #Initialize terraform
 terraform -chdir=vultr apply -var region=$region -var tag="${USERNAME}" -var prefix="${USERNAME}" -var $VULTR_API_KEY -var ssh_public_key=$ssh_public_key -var compute_nodes=$compute_nodes -var control_nodes=$control_nodes -var admin_nodes=$admin_nodes
 
 #
-/script/create hosts.yaml
+#/script/create hosts.yaml

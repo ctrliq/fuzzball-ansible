@@ -107,7 +107,7 @@ while true; do
   echo "Control nodes: $control_nodes"
   echo "Compute nodes: $compute_nodes"
   read -p "Do you want to proceed with this configuration? (y/N): " confirm
-  confirm="no" # Default to 'no' if input is empty
+  confirm=${confirm:-no} # Default to 'no' if input is empty
   case $confirm in
     [Yy][Ee][Ss] | [Yy])
       echo "Proceeding with the deployment..."

@@ -32,8 +32,6 @@ while true; do
   fi
 done
 
-read "Could you please provide your username"
-
 ####################################################################################################
 # Create a SSH key
 # Define the path for the SSH key

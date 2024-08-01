@@ -38,7 +38,7 @@ read "Could you please provide your username"
 # Create a SSH key
 # Define the path for the SSH key
 
-if [ -f $HOME/.ssh/id_rsa ]; then
+if [ -f "$HOME"/.ssh/id_rsa ]; then
     ssh_private_key="$HOME/.ssh/id_rsa"
 elif [ -f ~/.ssh/id_ecdsa ]; then
     ssh_private_key="$HOME/.ssh/id_ecdsa"

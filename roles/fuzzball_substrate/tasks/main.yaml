@@ -44,6 +44,7 @@
   ansible.builtin.systemd_service:
     name: fuzzball-shared.mount
     state: started
+    enabled: true
     daemon_reload: true
 
 - name: Start Fuzzball Substrate

@@ -1,7 +1,7 @@
 variable "admin_nodes" {
   type     = number
   nullable = false
-  default  = 1
+  default  = 0
 }
 
 resource "vultr_instance" "admin" {
@@ -10,7 +10,7 @@ resource "vultr_instance" "admin" {
   tags              = ["${var.tag}"]
   firewall_group_id = "${var.firewall_group_id}"
   plan              = "vhf-1c-2gb"
-  region            = "ewr"
+  region            = var.region
   os_id             = 448 # rocky linux
   hostname          = "${var.prefix}-admin${count.index+1}"
   vpc_ids           = [local.cluster_vpc2_id]

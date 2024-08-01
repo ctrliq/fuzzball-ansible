@@ -29,6 +29,11 @@ variable "prefix" {
   }
 }
 
+variable "region" {
+  type     = string
+  nullable = false 
+}
+
 variable "ssh_public_key" {
   type = string
   nullable = false

@@ -1,7 +1,7 @@
 variable "control_nodes" {
   type     = number
   nullable = false
-  default  = 1
+  default  = 0
 }
 
 resource "vultr_instance" "ctl" {

@@ -2,9 +2,6 @@ output "substrate_nfs_subnet" {
   value = "${vultr_vpc.cluster_net[0].v4_subnet}/${vultr_vpc.cluster_net[0].v4_subnet_mask}"
 }
 
-
-
-
 output "controller_node_ips" {
   description = "The main IPs of the controller nodes"
   value = {

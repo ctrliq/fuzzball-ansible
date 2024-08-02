@@ -39,16 +39,25 @@ done
 
 ####################################################################################################
 # Create a SSH key
-# Define the path for the SSH key
+####################################################################################################
 
 echo "===================================================================================================="
 echo "Checking if SSH Key exist"
 echo "===================================================================================================="
 
-if [ -f ~/.ssh/id_ed25519 ]; then
-    # Set $ssh_public_key if key exists
+if [ -f "$HOME"/.ssh/id_rsa ]; then
+    ssh_private_key="$HOME/.ssh/id_rsa"
+elif [ -f ~/.ssh/id_ecdsa ]; then
+    ssh_private_key="$HOME/.ssh/id_ecdsa"
+elif [ -f ~/.ssh/id_ed25519 ]; then
     ssh_private_key="$HOME/.ssh/id_ed25519"
-    ssh_public_key="$HOME/.ssh/id_ed25519.pub"
+else
+    ssh_private_key=""
+fi
+
+if [ -n "$ssh_private_key" ] && [ -f "$ssh_private_key" ]; then
+    # Set $ssh_public_key if key exists
+    ssh_public_key="${ssh_private_key}.pub"
     echo " "
     echo "Using existing SSH key: $ssh_public_key for deployment"
     echo " "
@@ -62,9 +71,9 @@ else
         read -p "Enter the file path to save the new key (default: ~/.ssh/id_ed25519): " key_path
         key_path=${key_path:-~/.ssh/id_ed25519}
         ssh-keygen -t ed25519 -f "$key_path" -N ""
-        ssh_public_key=$(cat "$key_path.pub")
+        ssh_public_key="${$key_path}.pub"
         echo "New SSH key generated: $key_path"
-        echo "Public key: $ssh_public_key"
+        echo "New Public key: $ssh_public_key"
     else
         echo " "
         echo "No SSH key generated."
@@ -80,7 +89,7 @@ fi
 ####################################################################################################
 
 echo "===================================================================================================="
-echo "Ammout of nodes to deploy"
+echo "Amount of nodes to deploy"
 echo "===================================================================================================="
 
 # Function to check if input is a valid number
@@ -94,8 +103,8 @@ is_number() {
 
 # Prompt for number of admin nodes to deploy
 while true; do
-  admin_nodes="1"  # Use default value if input is empty
   read -p "How many admin nodes would you want to add? (default 1): " admin_nodes
+  admin_nodes=${admin_nodes:-1}  # Use default value if input is empty
   if is_number "$admin_nodes"; then
     break
   else
@@ -105,8 +114,8 @@ done
 
 # Prompt for number of control nodes to deploy
 while true; do
-  control_nodes="1"  # Use default value if input is empty
   read -p "How many control nodes do you want? (default 1): " control_nodes
+  control_nodes=${control_nodes:-1}
   if is_number "$control_nodes"; then
     break
   else
@@ -116,8 +125,8 @@ done
 
 # Prompt for number of compute nodes to deploy
 while true; do
-  compute_nodes="1"  # Use default value if input is empty
   read -p "How many compute nodes do you want? (default 1): " compute_nodes
+  compute_nodes=${compute_nodes:-1}
   if is_number "$compute_nodes"; then
     break
   else
@@ -152,6 +161,10 @@ done
 # Prompt for Vultr API key
 ####################################################################################################
 
+echo "===================================================================================================="
+echo "Amount of nodes to deploy"
+echo "===================================================================================================="
+echo " "
 while true; do
   read -sp "Please enter your API key: " VULTR_API_KEY
   echo  # Move to the next line after input
@@ -168,31 +181,92 @@ echo "Length of the entered API key: ${VULTR_API_KEY} characters"
 
 
 ####################################################################################################
-# Prompt for firewall_group_id
+# Prompt for firewall_group_id, vpc id, and region
+####################################################################################################
+echo "===================================================================================================="
+echo "Firewall ID to deploy to"
+echo "===================================================================================================="
+echo " "
 while true; do
-  read -p "Please enter your firewall group ID: " firewall_group_id
-  if [[ -n "$firewall_group_id" ]]; then
+read -p "Please enter your firewall group ID: " firewall_group_id
+if [[ -n "$firewall_group_id" ]]; then
     echo "Firewall group ID entered successfully."
     break
-  else
+else
     echo "Firewall group ID cannot be empty. Please try again."
-  fi
+fi
+
+echo "===================================================================================================="
+echo "Region to deploy to"
+echo "===================================================================================================="
+echo " "
+
+# List of Vultr regions 
+declare -A regions=(
+    ["NYC"]="New York"
+    ["CHI"]="Chicago"
+    ["DAL"]="Dallas"
+    ["SEA"]="Seattle"
+    ["ATL"]="Atlanta"
+    ["LAX"]="Los Angeles"
+    ["SJC"]="Silicon Valley"
+    ["NJ"]="New Jersey"
+    ["TOR"]="Toronto"
+    ["LON"]="London"
+    ["PAR"]="Paris"
+    ["AMS"]="Amsterdam"
+    ["FRA"]="Frankfurt"
+    ["SGP"]="Singapore"
+    ["TYO"]="Tokyo"
+    ["ICN"]="Seoul"
+    ["SYD"]="Sydney"
+    ["GRU"]="Sao Paulo"
+)
+
+echo "Please select a Vultr region:"
+
+# Display the selection menu
+select abbreviation in "${!regions[@]}"; do
+    # Check if the selection is valid
+    if [[ -n "$abbreviation" ]]; then
+        selected_region=${regions[$abbreviation]}
+        echo "You selected: $selected_region ($abbreviation)"
+        break
+    else
+        echo "Invalid selection. Please try again."
+    fi
 done
 
-###
-#add to check ansible
+echo "===================================================================================================="
+echo "VPC to deploy to"
+echo "Please leave blank to create new VPC"
+echo "===================================================================================================="
+echo " "
 
-###
-#Prompt for region 
-#
-/script/create hosst.yaml
+# Prompt the user for the VPC ID
+read -p "Enter VPC ID (or leave blank to create a new one): " VPC_ID
+
+# Check if the input is empty
+if [ -z "$VPC_ID" ]; then
+    echo "No VPC ID entered. A new VPC will be created."
+    VPC_ID=""
+else
+    echo "VPC ID entered: $VPC_ID"
+fi
+
 
 ####################################################################################################
 ###### Lets Run Terraform
 
 terraform -chdir=vultr init  #Initialize terraform
-terraform -chdir=vultr apply -var region=$region -var tag="${USERNAME}" -var prefix="${USERNAME}" -var $VULTR_API_KEY -var ssh_public_key=$ssh_public_key -var compute_nodes=$compute_nodes -var control_nodes=$control_nodes -var admin_nodes=$admin_nodes
+
+if [ -z "$VPC_ID" ]; then
+    terraform -chdir=vultr apply -var region=$selected_region -var tag="${USERNAME}" -var prefix="${USERNAME}" -var $VULTR_API_KEY -var ssh_public_key=$ssh_public_key -var compute_nodes=$compute_nodes -var control_nodes=$control_nodes -var admin_nodes=$admin_nodes
+else
+    terraform -chdir=vultr apply -var region=$selected_region -var cluster_vpc_id=$VPC_ID -var tag="${USERNAME}" -var prefix="${USERNAME}" -var $VULTR_API_KEY -var ssh_public_key=$ssh_public_key -var compute_nodes=$compute_nodes -var control_nodes=$control_nodes -var admin_nodes=$admin_nodes
+fi
+###
+#add to check ansible
 
 #
 #/script/create hosts.yaml
-#

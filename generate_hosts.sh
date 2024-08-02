@@ -78,6 +78,7 @@ echo "$TF_OUTPUT" | jq -r '.admin_nodes_public_ip.value | to_entries[] | "\(.key
   cat << EOF >> hosts.yaml
         ${key##*_}:
           ansible_host: $value
+          cluster_interface: "enp8s0"
 EOF
 done
 
@@ -86,10 +87,12 @@ cat << EOF >> hosts.yaml
       hosts:
 EOF
 echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value | to_entries[] | "\(.key)=\(.value)"' | while IFS="=" read -r key value; do
+internal_ip=$(echo "$TF_OUTPUT" | jq -r ".controller_node_private_ips.value.private_IP_${key##*_}")
   cat << EOF >> hosts.yaml
         ${key##*_}:
           ansible_host: $value
-          #rke2_node_ip:
+          cluster_interface: "enp8s0"
+          rke2_node_ip: $internal_ip
 EOF
 done
 cat << EOF >> hosts.yaml
@@ -100,6 +103,6 @@ echo "$TF_OUTPUT" | jq -r '.compute_instances_public_ip.value | to_entries[] | "
   cat << EOF >> hosts.yaml
         ${key##*_}:
           ansible_host: $value
-          #cluster_interface:
+          cluster_interface: "enp8s0"
 EOF
 done

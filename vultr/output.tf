@@ -23,6 +23,27 @@ output "compute_instances_public_ip" {
   }
 }
 
+output "controller_node_private_ips" {
+  description = "The main IPs of the controller nodes"
+  value = {
+    for idx, instance in vultr_instance.ctl : "private_IP_ctl${idx + 1}" => instance.internal_ip
+  }
+}
+
+output "admin_nodes_private_ip" {
+  description = "The public IPs of the admin instances"
+  value = {
+    for idx, instance in vultr_instance.admin : "private_IP_admin${idx + 1}" => instance.internal_ip
+  }
+}
+
+output "compute_instances_private_ip" {
+  description = "The public IPs of the ctl instances"
+  value = {
+    for idx, instance in vultr_instance.compute : "private_IP_ctl${idx + 1}" => instance.internal_ip
+  }
+}
+
 locals {
   transformed_ip    = [for instance in vultr_instance.ctl : replace(instance.main_ip, ".", "-")]
   transformed_kc_ip = [for instance in vultr_instance.admin : replace(instance.main_ip, ".", "-")]

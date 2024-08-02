@@ -51,12 +51,12 @@ locals {
 
 output "transformed_fuzzball_ip" {
   description = "The transformed IPs of the ctl instances"
-  value = { for idx, ip in local.transformed_ip : "internal_IP_ctl${idx + 1}" => ip }
+  value = { for idx, ip in local.transformed_ip : "public_tx_IP_ctl${idx + 1}" => ip }
 }
 
 output "transformed_keycloak_ip" {
   description = "The transformed IPs of the admin instances"
-  value = { for idx, ip in local.transformed_kc_ip : "internal_IP_admin${idx + 1}" => ip }
+  value = { for idx, ip in local.transformed_kc_ip : "public_tx_IP_admin${idx + 1}" => ip }
 }
 
 

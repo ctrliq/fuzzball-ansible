@@ -6,6 +6,7 @@ provider "registry.terraform.io/vultr/vultr" {
   constraints = "2.21.0"
   hashes = [
     "h1:+ExuN7qWJYRydmEOGRP5nX9HxX0TAlFUM4Vop1UAJs0=",
+    "h1:tSboTajjXQ9WQ8hOwf/ZLGQ/+TwUzno4vaiNz1VMus4=",
     "zh:09c7eeceeacd6d2f2c9406ad969a7d145bb21ea68ebcf7fe6426a764c2b15fcd",
     "zh:41505f11b630154167bd68720937992c3829a0e7b6766eebc57a1636462533c6",
     "zh:45364ed653e79285b011ef0f24febdf74f39c300727f6799203f0128a4ae587a",

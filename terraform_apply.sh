@@ -195,3 +195,4 @@ terraform -chdir=vultr apply -var region=$region -var tag="${USERNAME}" -var pre
 
 #
 #/script/create hosts.yaml
+#

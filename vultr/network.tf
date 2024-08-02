@@ -10,7 +10,8 @@ resource "vultr_vpc2" "cluster_net" {
     description    = "Fuzzball testing cluster network ${var.prefix}"
     region         = var.region
     ip_block       = "10.0.0.0"
-    prefix_length  = 24
+    prefix_length   = 24
+    ip_type        = "v4"
 }
 
 locals {

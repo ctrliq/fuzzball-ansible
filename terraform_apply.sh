@@ -177,7 +177,7 @@ while true; do
 done
 
 # Output the API key length for confirmation (optional)
-echo "Length of the entered API key: ${VULTR_API_KEY} characters"
+echo "Length of the entered API key: $(echo $VULTR_API_KEY | wc -m) characters"
 
 
 ####################################################################################################
@@ -188,13 +188,14 @@ echo "Firewall ID to deploy to"
 echo "===================================================================================================="
 echo " "
 while true; do
-read -p "Please enter your firewall group ID: " firewall_group_id
-if [[ -n "$firewall_group_id" ]]; then
-    echo "Firewall group ID entered successfully."
-    break
-else
-    echo "Firewall group ID cannot be empty. Please try again."
-fi
+  read -p "Please enter your firewall group ID: " firewall_group_id
+  if [[ -n "$firewall_group_id" ]]; then
+      echo "Firewall group ID entered successfully."
+      break
+  else
+      echo "Firewall group ID cannot be empty. Please try again."
+  fi
+done
 
 echo "===================================================================================================="
 echo "Region to deploy to"
@@ -203,24 +204,38 @@ echo " "
 
 # List of Vultr regions 
 declare -A regions=(
-    ["NYC"]="New York"
-    ["CHI"]="Chicago"
-    ["DAL"]="Dallas"
-    ["SEA"]="Seattle"
-    ["ATL"]="Atlanta"
-    ["LAX"]="Los Angeles"
-    ["SJC"]="Silicon Valley"
-    ["NJ"]="New Jersey"
-    ["TOR"]="Toronto"
-    ["LON"]="London"
-    ["PAR"]="Paris"
-    ["AMS"]="Amsterdam"
-    ["FRA"]="Frankfurt"
-    ["SGP"]="Singapore"
-    ["TYO"]="Tokyo"
-    ["ICN"]="Seoul"
-    ["SYD"]="Sydney"
-    ["GRU"]="Sao Paulo"
+    ["Amsterdam"]="ams"
+    ["Atlanta"]="atl"
+    ["Bangalore"]="blr"
+    ["Mumbai"]="bom"
+    ["Paris"]="cdg"
+    ["Delhi NCR"]="del"
+    ["Dallas"]="dfw"
+    ["New Jersey"]="ewr"
+    ["Frankfurt"]="fra"
+    ["Honolulu"]="hnl"
+    ["Seoul"]="icn"
+    ["Osaka"]="itm"
+    ["Johannesburg"]="jnb"
+    ["Los Angeles"]="lax"
+    ["London"]="lhr"
+    ["Madrid"]="mad"
+    ["Manchester"]="man"
+    ["Melbourne"]="mel"
+    ["Mexico City"]="mex"
+    ["Miami"]="mia"
+    ["Tokyo"]="nrt"
+    ["Chicago"]="ord"
+    ["São Paulo"]="sao"
+    ["Santiago"]="scl"
+    ["Seattle"]="sea"
+    ["Singapore"]="sgp"
+    ["Silicon Valley"]="sjc"
+    ["Stockholm"]="sto"
+    ["Sydney"]="syd"
+    ["Tel Aviv"]="tlv"
+    ["Warsaw"]="waw"
+    ["Toronto"]="yto"
 )
 
 echo "Please select a Vultr region:"
@@ -261,9 +276,9 @@ fi
 terraform -chdir=vultr init  #Initialize terraform
 
 if [ -z "$VPC_ID" ]; then
-    terraform -chdir=vultr apply -var region=$selected_region -var tag="${USERNAME}" -var prefix="${USERNAME}" -var $VULTR_API_KEY -var ssh_public_key=$ssh_public_key -var compute_nodes=$compute_nodes -var control_nodes=$control_nodes -var admin_nodes=$admin_nodes
+    terraform -chdir=vultr apply -var region="$selected_region" -var tag="${USERNAME}" -var prefix="${USERNAME}" -var VULTR_API_KEY="$VULTR_API_KEY" -var ssh_public_key="$ssh_public_key" -var compute_nodes="$compute_nodes" -var control_nodes="$control_nodes" -var admin_nodes="$admin_nodes" -var firewall_group_id="$firewall_group_id"
 else
-    terraform -chdir=vultr apply -var region=$selected_region -var cluster_vpc_id=$VPC_ID -var tag="${USERNAME}" -var prefix="${USERNAME}" -var $VULTR_API_KEY -var ssh_public_key=$ssh_public_key -var compute_nodes=$compute_nodes -var control_nodes=$control_nodes -var admin_nodes=$admin_nodes
+    terraform -chdir=vultr apply -var region="$selected_region" -var cluster_vpc_id="$VPC_ID" -var tag="${USERNAME}" -var prefix="${USERNAME}" -var VULTR_API_KEY="$VULTR_API_KEY" -var ssh_public_key="$ssh_public_key" -var compute_nodes="$compute_nodes" -var control_nodes="$control_nodes" -var admin_nodes="$admin_nodes" -var firewall_group_id="$firewall_group_id"
 fi
 ###
 #add to check ansible

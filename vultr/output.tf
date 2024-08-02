@@ -1,5 +1,5 @@
 output "substrate_nfs_subnet" {
-  value = "${vultr_vpc.cluster_net[0].v4_subnet}/${vultr_vpc.cluster_net[0].v4_subnet_mask}"
+  value = "${vultr_vpc2.cluster_net[0].ip_block}/${vultr_vpc2.cluster_net[0].prefix_length}"
 }
 
 output "controller_node_public_ips" {

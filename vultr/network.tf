@@ -7,7 +7,7 @@ variable "cluster_vpc2_id" {
 
 resource "vultr_vpc2" "cluster_net" {
     count          = var.cluster_vpc2_id == null ? 1 : 0
-    description    = "Fuzzball testing cluster network (${var.prefix})"
+    description    = "Fuzzball testing cluster network ${var.prefix}"
     region         = var.region
     ip_block       = "10.0.0.0"
     prefix_length  = 24

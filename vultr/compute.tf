@@ -20,7 +20,7 @@ resource "vultr_instance" "compute" {
   script_id         = vultr_startup_script.ipxeNodes.id
   os_id             = 448 # rocky linux
   hostname          = "${var.prefix}-compute${count.index+1}"
-  vpc_ids           = [local.cluster_vpc2_id]
+  vpc2_ids           = [local.cluster_vpc2_id]
   ssh_key_ids       = [vultr_ssh_key.root_ssh_key.id]
 }
 
@@ -34,6 +34,6 @@ resource "vultr_instance" "tiny_compute" {
   script_id         = vultr_startup_script.ipxeNodes.id
   os_id             = 448 # rocky linux
   hostname          = "${var.prefix}-tiny-compute${count.index+1}"
-  vpc_ids           = [local.cluster_vpc2_id]
+  vpc2_ids           = [local.cluster_vpc2_id]
   ssh_key_ids       = [vultr_ssh_key.root_ssh_key.id]
 }

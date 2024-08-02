@@ -3,6 +3,9 @@
 
 ####################################################################################################
 #Let's get some variables:
+echo "####################################################################################################"
+echo "Gathering information for the deployment"
+echo "####################################################################################################"
 
 # Function to check for invalid characters
 contains_invalid_characters() {
@@ -27,7 +30,9 @@ while true; do
   elif [[ ${#user_input} -gt 36 ]]; then
     echo "Input exceeds 36 characters. Please try again."
   else
+    echo " "
     echo "Your username is: $USERNAME"
+    echo " "
     break
   fi
 done
@@ -36,24 +41,21 @@ done
 # Create a SSH key
 # Define the path for the SSH key
 
-if [ -f "$HOME"/.ssh/id_rsa ]; then
-    ssh_private_key="$HOME/.ssh/id_rsa"
-elif [ -f ~/.ssh/id_ecdsa ]; then
-    ssh_private_key="$HOME/.ssh/id_ecdsa"
-elif [ -f ~/.ssh/id_ed25519 ]; then
+echo "===================================================================================================="
+echo "Checking if SSH Key exist"
+echo "===================================================================================================="
+
+if [ -f ~/.ssh/id_ed25519 ]; then
+    # Set $ssh_public_key if key exists
     ssh_private_key="$HOME/.ssh/id_ed25519"
+    ssh_public_key="$HOME/.ssh/id_ed25519.pub"
+    echo " "
+    echo "Using existing SSH key: $ssh_public_key for deployment"
+    echo " "
 else
-    ssh_private_key=""
-fi
-
-# Set $ssh_public_key if key exists
-if [ -n "$ssh_private_key" ] && [ -f "$ssh_private_key" ]; then
-    ssh_public_key=$(cat "$ssh_private_key.pub")
-    echo "Using existing SSH key: $ssh_private_key"
-    echo "Public key: $ssh_public_key"
-else
-    echo "No default SSH key found."
-
+    echo " "
+    echo "No SSH key found."
+    echo " "
     # Prompt user to generate a new SSH key
     read -p "Do you want to generate a new SSH key? (y/n): " response
     if [[ "$response" =~ ^[Yy]$ ]]; then
@@ -64,14 +66,23 @@ else
         echo "New SSH key generated: $key_path"
         echo "Public key: $ssh_public_key"
     else
+        echo " "
         echo "No SSH key generated."
+        echo " "
+        echo "Script canceled by user request"
+        echo " "
         exit 1
     fi
 fi
 
-
 ####################################################################################################
 #Get amount of nodes to deploy
+####################################################################################################
+
+echo "===================================================================================================="
+echo "Ammout of nodes to deploy"
+echo "===================================================================================================="
+
 # Function to check if input is a valid number
 is_number() {
   if [[ $1 =~ ^[0-9]+$ ]]; then
@@ -83,8 +94,8 @@ is_number() {
 
 # Prompt for number of admin nodes to deploy
 while true; do
-  read -p "How many admin nodes do you want? (default 1): " admin_nodes
   admin_nodes="1"  # Use default value if input is empty
+  read -p "How many admin nodes would you want to add? (default 1): " admin_nodes
   if is_number "$admin_nodes"; then
     break
   else
@@ -94,8 +105,8 @@ done
 
 # Prompt for number of control nodes to deploy
 while true; do
-  read -p "How many control nodes do you want? (default 1): " control_nodes
   control_nodes="1"  # Use default value if input is empty
+  read -p "How many control nodes do you want? (default 1): " control_nodes
   if is_number "$control_nodes"; then
     break
   else
@@ -105,8 +116,8 @@ done
 
 # Prompt for number of compute nodes to deploy
 while true; do
-  read -p "How many compute nodes do you want? (default 1): " compute_nodes
   compute_nodes="1"  # Use default value if input is empty
+  read -p "How many compute nodes do you want? (default 1): " compute_nodes
   if is_number "$compute_nodes"; then
     break
   else
@@ -128,7 +139,7 @@ while true; do
       break
       ;;
     [Nn][Oo] | [Nn])
-      echo "Configuration cancelled."
+      echo "Installation cancelled by user request"
       exit 1
       ;;
     *)
@@ -139,6 +150,8 @@ done
 
 ####################################################################################################
 # Prompt for Vultr API key
+####################################################################################################
+
 while true; do
   read -sp "Please enter your API key: " VULTR_API_KEY
   echo  # Move to the next line after input

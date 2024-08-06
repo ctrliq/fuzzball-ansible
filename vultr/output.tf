@@ -19,7 +19,7 @@ output "admin_nodes_public_ip" {
 output "compute_instances_public_ip" {
   description = "The public IPs of the ctl instances"
   value = {
-    for idx, instance in vultr_instance.compute : "public_IP_ctl${idx + 1}" => instance.main_ip
+    for idx, instance in vultr_instance.compute : "public_IP_compute${idx + 1}" => instance.main_ip
   }
 }
 
@@ -40,7 +40,7 @@ output "admin_nodes_private_ip" {
 output "compute_instances_private_ip" {
   description = "The public IPs of the ctl instances"
   value = {
-    for idx, instance in vultr_instance.compute : "private_IP_ctl${idx + 1}" => instance.internal_ip
+    for idx, instance in vultr_instance.compute : "private_IP_compute${idx + 1}" => instance.internal_ip
   }
 }
 

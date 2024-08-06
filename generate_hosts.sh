@@ -22,7 +22,7 @@ all:
     ansible_user: root
     mtn_access_key: ${MTN_KEY}
     substrate_nfs_subnet: ${substrate_nfs_subnet}
-    substrate_nfs_mount: ${substrate_nfs_mount}:/svr/fuzzball/shared
+    substrate_nfs_mount: ${substrate_nfs_mount}:/srv/fuzzball/shared
     FB_POLL_CONFIG: /fuzzball/shared/substrate/substrate-config.yaml
     fuzzball_operator_version: ${fuzzball_operator_version}
     fuzzball_operator_storage_class: "local-path"

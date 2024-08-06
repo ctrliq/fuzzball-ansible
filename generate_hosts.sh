@@ -14,7 +14,7 @@ keycloak_uuid=$(uuidgen | tr '[:upper:]' '[:lower:]')
 
 read -rp "Enter your Mountain key: " MTN_KEY
 read -rp "Enter fuzzball operator version (default is v0.0.1-gcf137a20): " fuzzbal_ver
-fuzzball_operator_version=${fuzzbal_ver:v0.0.1-gcf137a20}
+fuzzball_operator_version=${fuzzbal_ver:-v0.0.1-gcf137a20}
 
 cat << EOF > hosts.yaml
 all:

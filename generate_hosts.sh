@@ -12,9 +12,11 @@ keycloak_domain="${keycloak_ip_dashed}.nip.io"
 
 keycloak_uuid=$(uuidgen | tr '[:upper:]' '[:lower:]')
 
+fuzzball_default_version="v0.0.1-g91c1e539"
+
 read -rp "Enter your Mountain key: " MTN_KEY
-read -rp "Enter fuzzball operator version (default is v0.0.1-gcf137a20): " fuzzbal_ver
-fuzzball_operator_version=${fuzzbal_ver:-'v0.0.1-g91c1e539'}
+read -rp "Enter fuzzball operator version (default is ${fuzzball_default_version}): " fuzzbal_ver
+fuzzball_operator_version=${fuzzbal_ver:-"${fuzzball_default_version}"}
 
 cat << EOF > hosts.yaml
 all:

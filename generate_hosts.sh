@@ -12,7 +12,7 @@ keycloak_domain="${keycloak_ip_dashed}.nip.io"
 
 keycloak_uuid=$(uuidgen | tr '[:upper:]' '[:lower:]')
 
-read -rp "Enter your variable value: " MTN_KEY
+read -rp "Enter your Mountain key: " MTN_KEY
 read -rp "Enter fuzzball operator version (default is v0.0.1-gcf137a20): " fuzzbal_ver
 fuzzball_operator_version=${fuzzbal_ver:v0.0.1-gcf137a20}
 

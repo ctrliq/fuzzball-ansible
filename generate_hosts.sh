@@ -63,10 +63,10 @@ all:
     keycloak_env:
       KC_DB_PASSWORD: password
       KEYCLOAK_ADMIN_PASSWORD: password
-      KC_HOSTNAME_URL: https//auth.${keycloak_domain}
-      KC_HOSTNAME_ADMIN_URL: https//authadmin.${keycloak_domain}
-      keycloak_certbot_email: noreply@ciq.co
-      keycloak_certbot_domain: "https//auth.${keycloak_domain},https//authadmin.${keycloak_domain}"
+      KC_HOSTNAME_URL: https://auth.${keycloak_domain}
+      KC_HOSTNAME_ADMIN_URL: https://authadmin.${keycloak_domain}
+    keycloak_certbot_email: noreply@ciq.co
+    keycloak_certbot_domain: "auth.${keycloak_domain},authadmin.${keycloak_domain}"
 EOF
 
 cat << EOF >> hosts.yaml

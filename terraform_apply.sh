@@ -162,11 +162,11 @@ done
 ####################################################################################################
 
 echo "===================================================================================================="
-echo "Amount of nodes to deploy"
+echo "Vultr API key"
 echo "===================================================================================================="
 echo " "
 while true; do
-  read -sp "Please enter your API key: " VULTR_API_KEY
+  read -sp "Please enter your Vultr API key: " VULTR_API_KEY
   echo  # Move to the next line after input
   if [[ -n "$VULTR_API_KEY" ]]; then
     echo "API key entered successfully."

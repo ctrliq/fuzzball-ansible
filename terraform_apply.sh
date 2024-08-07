@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 
-if [[ ! -f terraform.tfvars ]]; then
+if [[ ! -f vultr/terraform.tfvars ]]; then
     
   ./user_input.sh
 
@@ -25,9 +25,90 @@ fi
 
 ./generate_hosts.sh
 
-###
-#add to check ansible
-###
+##################################################################################################################################
+# Check for Ansible
+##################################################################################################################################
+
+echo " "
+echo "===================================================================================================="
+echo "Ansible is a prerequisite for this installation"
+echo " "
+echo "Checking if ansible is installed"
+echo "===================================================================================================="
+echo " "
 
 
+# Function to install Ansible using apt
+install_ansible_apt() {
+    sudo apt update
+    sudo apt install -y ansible
+}
 
+# Function to install Ansible using yum
+install_ansible_yum() {
+    sudo yum install -y epel-release
+    sudo yum install -y ansible
+}
+
+# Function to install Ansible using dnf
+install_ansible_dnf() {
+    sudo dnf install -y ansible
+}
+
+# Function to install Ansible using Homebrew
+install_ansible_brew() {
+    brew install ansible
+}
+
+# Check if Ansible is installed
+if command -v ansible >/dev/null 2>&1; then
+    echo "Ansible is installed."
+    ansible --version
+else
+    echo "Ansible is not installed."
+    read -p "Do you want to install Ansible? (yes/no): " choice
+    if [[ "$choice" == "yes" ]]; then
+        # Determine the package manager and install Ansible
+        if command -v apt >/dev/null 2>&1; then
+            install_ansible_apt
+        elif command -v yum >/dev/null 2>&1; then
+            install_ansible_yum
+        elif command -v dnf >/dev/null 2>&1; then
+            install_ansible_dnf
+        elif command -v brew >/dev/null 2>&1; then
+            install_ansible_brew
+        else
+            echo "Unsupported package manager. Please install Ansible manually."
+            exit 1
+        fi
+
+        # Verify installation
+        if command -v ansible >/dev/null 2>&1; then
+            echo "Ansible has been installed successfully."
+            ansible --version
+        else
+            echo "Failed to install Ansible. Please check your package manager and try again."
+        fi
+    else
+        echo "Ansible installation aborted by the user."
+    fi
+fi
+
+
+##################################################################################################################################
+# Sending outputs to the user
+##################################################################################################################################
+
+echo " "
+echo "===================================================================================================="
+echo "Ansible has been installed successfully and hosts.yaml file has been generated with the necesary inputs"
+echo " "
+echo "To continue deploying fuzzball to the recently created vultr instances please run the following comands"
+echo "===================================================================================================="
+echo " "
+echo "ansible-playbook setup-rke2-and-fuzzball.yaml --inventory hosts.yaml"
+echo " "
+echo " "
+echo "ansible-playbook setup-keycloak.yaml --inventory hosts.yaml"
+echo " "
+echo " "

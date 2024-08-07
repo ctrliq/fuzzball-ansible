@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 
-if [[ ! -f vultr_deployment.tfvars ]]; then
+if [[ ! -f vultr_deployment.auto.tfvars ]]; then
     
   ./user_input.sh
 

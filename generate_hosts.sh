@@ -15,7 +15,7 @@ then
     source .env.sh
 fi
 
-if [[ -z keycloak_uuid ]]
+if [[ -z $keycloak_uuid ]]
 then
     keycloak_uuid=$(uuidgen | tr '[:upper:]' '[:lower:]')
     echo "export keycloak_uuid=$keycloak_uuid" >> .env.sh
@@ -24,14 +24,14 @@ fi
 
 fuzzball_default_version="v0.0.1-g91c1e539"
 
-if [[ -z MTN_KEY ]]
+if [[ -z $MTN_KEY ]]
 then
     read -rp "Enter your Mountain key: " MTN_KEY
     echo "export MTN_KEY=$MTN_KEY" >> .env.sh
     export MTN_KEY
 fi
 
-if [[ -z fuzzball_operator_version ]]
+if [[ -z $fuzzball_operator_version ]]
 then
     read -rp "Enter fuzzball operator version (default is ${fuzzball_default_version}): " fuzzbal_ver
     fuzzball_operator_version=${fuzzbal_ver:-"${fuzzball_default_version}"}

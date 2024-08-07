@@ -39,7 +39,7 @@ while true; do
     echo "Your username is: $USERNAME"
     echo " "
     echo "prefix = \"$USERNAME\"" > vultr/terraform.tfvars
-    echo "tag = \"$USERNAME\"" > vultr/terraform.tfvars
+    echo "tag = \"$USERNAME\"" >> vultr/terraform.tfvars
     break
     fi
 done
@@ -285,4 +285,5 @@ if [ -z "$VPC_ID" ]; then
     VPC_ID=""
 else
     echo "VPC ID entered: $VPC_ID"
+    echo "VPC_ID = \"$VPC_ID\"" >> vultr/terraform.tfvars
 fi

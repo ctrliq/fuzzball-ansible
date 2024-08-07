@@ -2,7 +2,8 @@
 #
 
 if [[! -f vultr_deployment.tfvars ]]; then
-
+    
+    echo "File vultr_deployment.tfvars doesnt exist"
     ####################################################################################################
     #Let's get some variables:
     ####################################################################################################
@@ -291,7 +292,8 @@ if [[! -f vultr_deployment.tfvars ]]; then
 else 
     ####################################################################################################
     ###### Lets Run Terraform
-
+    echo "vultr_deployment.tfvars file exist"
+    ls vultr_deployment.tfvars
     terraform -chdir=vultr init  #Initialize terraform
 
     #if [ -z "$VPC_ID" ]; then

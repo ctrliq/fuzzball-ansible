@@ -10,13 +10,34 @@ fz_domain="${lb_ip_dashed}.nip.io"
 keycloak_ip_dashed=${keycloak_ip//\./-}
 keycloak_domain="${keycloak_ip_dashed}.nip.io"
 
-keycloak_uuid=$(uuidgen | tr '[:upper:]' '[:lower:]')
+if [[ -f ".env.sh" ]]
+then
+    source .env.sh
+fi
+
+if [[ -z keycloak_uuid ]]
+then
+    keycloak_uuid=$(uuidgen | tr '[:upper:]' '[:lower:]')
+    echo "export keycloak_uuid=$keycloak_uuid" >> .env.sh
+    export keycloak_uuid
+fi
 
 fuzzball_default_version="v0.0.1-g91c1e539"
 
-read -rp "Enter your Mountain key: " MTN_KEY
-read -rp "Enter fuzzball operator version (default is ${fuzzball_default_version}): " fuzzbal_ver
-fuzzball_operator_version=${fuzzbal_ver:-"${fuzzball_default_version}"}
+if [[ -z MTN_KEY ]]
+then
+    read -rp "Enter your Mountain key: " MTN_KEY
+    echo "export MTN_KEY=$MTN_KEY" >> .env.sh
+    export MTN_KEY
+fi
+
+if [[ -z fuzzball_operator_version ]]
+then
+    read -rp "Enter fuzzball operator version (default is ${fuzzball_default_version}): " fuzzbal_ver
+    fuzzball_operator_version=${fuzzbal_ver:-"${fuzzball_default_version}"}
+    echo "export fuzzball_operator_version=$fuzzball_operator_version" >> .env.sh
+    export fuzzball_operator_version
+fi
 
 cat << EOF > hosts.yaml
 all:
@@ -108,3 +129,5 @@ echo "$TF_OUTPUT" | jq -r '.compute_instances_public_ip.value | to_entries[] | "
           cluster_interface: "enp8s0"
 EOF
 done
+
+printf "\e[32m✅ hosts.yaml\e[0m file generated. Please check for any issues.\n"

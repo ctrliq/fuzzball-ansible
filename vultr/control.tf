@@ -15,4 +15,5 @@ resource "vultr_instance" "ctl" {
   hostname          = "${var.prefix}-ctl${count.index+1}"
   vpc_ids           = [local.cluster_vpc_id]
   ssh_key_ids       = [vultr_ssh_key.root_ssh_key.id]
+  enable_ipv6       = true
 }

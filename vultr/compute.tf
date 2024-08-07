@@ -22,6 +22,7 @@ resource "vultr_instance" "compute" {
   hostname          = "${var.prefix}-compute${count.index+1}"
   vpc_ids           = [local.cluster_vpc_id]
   ssh_key_ids       = [vultr_ssh_key.root_ssh_key.id]
+  enable_ipv6       = true
 }
 
 resource "vultr_instance" "tiny_compute" {
@@ -36,4 +37,5 @@ resource "vultr_instance" "tiny_compute" {
   hostname          = "${var.prefix}-tiny-compute${count.index+1}"
   vpc_ids           = [local.cluster_vpc_id]
   ssh_key_ids       = [vultr_ssh_key.root_ssh_key.id]
+  enable_ipv6       = true
 }

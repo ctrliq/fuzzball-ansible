@@ -38,7 +38,7 @@ while true; do
     echo " "
     echo "Your username is: $USERNAME"
     echo " "
-    echo "USERNAME=$USERNAME" > vultr_deployment.auto.tfvars
+    echo "USERNAME=$USERNAME" > terraform.tfvars
     break
     fi
 done
@@ -90,7 +90,7 @@ else
         exit 1
     fi
 fi
-echo "ssh_public_key=$ssh_public_key" >> vultr_deployment.auto.tfvars
+echo "ssh_public_key=$ssh_public_key" >> terraform.tfvars
 
 ####################################################################################################
 #Get amount of nodes to deploy
@@ -165,9 +165,9 @@ while true; do
         ;;
     esac
 done
-echo "admin_nodes=$admin_nodes" >> vultr_deployment.auto.tfvars
-echo "control_nodes=$control_nodes" >> vultr_deployment.auto.tfvars
-echo "compute_nodes=$compute_nodes" >> vultr_deployment.auto.tfvars
+echo "admin_nodes=$admin_nodes" >> terraform.tfvars
+echo "control_nodes=$control_nodes" >> terraform.tfvars
+echo "compute_nodes=$compute_nodes" >> terraform.tfvars
 
 ####################################################################################################
 # Prompt for Vultr API key
@@ -190,7 +190,7 @@ done
 
 # Output the API key length for confirmation (optional)
 echo "Length of the entered API key: $(echo $VULTR_API_KEY | wc -m) characters"
-echo "VULTR_API_KEY=$VULTR_API_KEY" >> vultr_deployment.auto.tfvars
+echo "VULTR_API_KEY=$VULTR_API_KEY" >> terraform.tfvars
 
 ####################################################################################################
 # Prompt for firewall_group_id, vpc id, and region
@@ -204,7 +204,7 @@ while true; do
     read -p "Please enter your firewall group ID: " firewall_group_id
     if [[ -n "$firewall_group_id" ]]; then
         echo "Firewall group ID entered successfully."
-        echo "firewall_group_id=$firewall_group_id" >> vultr_deployment.auto.tfvars
+        echo "firewall_group_id=$firewall_group_id" >> terraform.tfvars
         break
     else
         echo "Firewall group ID cannot be empty. Please try again."
@@ -262,7 +262,7 @@ select abbreviation in "${!regions[@]}"; do
     if [[ -n "$abbreviation" ]]; then
         selected_region=${regions[$abbreviation]}
         echo "You selected: $selected_region ($abbreviation)"
-        echo "region=$selected_region" >> vultr_deployment.auto.tfvars
+        echo "region=$selected_region" >> terraform.tfvars
         break
     else
         echo "Invalid selection. Please try again."

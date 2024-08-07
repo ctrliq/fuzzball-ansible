@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 
-if [[ ! -f vultr_deployment.auto.tfvars ]]; then
+if [[ ! -f terraform.tfvars ]]; then
     
   ./user_input.sh
 

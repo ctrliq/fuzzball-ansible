@@ -3,9 +3,14 @@
 
 ####################################################################################################
 #Let's get some variables:
+####################################################################################################
+
+echo " "
 echo "####################################################################################################"
 echo "Gathering information for the deployment"
 echo "####################################################################################################"
+echo " "
+echo " "
 
 # Function to check for invalid characters
 contains_invalid_characters() {
@@ -33,6 +38,7 @@ while true; do
     echo " "
     echo "Your username is: $USERNAME"
     echo " "
+    echo "USERNAME=$USERNAME" > vultr_deployment.tfvars
     break
   fi
 done
@@ -40,10 +46,11 @@ done
 ####################################################################################################
 # Create a SSH key
 ####################################################################################################
-
+echo " "
 echo "===================================================================================================="
 echo "Checking if SSH Key exist"
 echo "===================================================================================================="
+echo " "
 
 if [ -f "$HOME"/.ssh/id_rsa ]; then
     ssh_private_key="$HOME/.ssh/id_rsa"
@@ -83,14 +90,16 @@ else
         exit 1
     fi
 fi
+echo "ssh_public_key=$ssh_public_key" >> vultr_deployment.tfvars
 
 ####################################################################################################
 #Get amount of nodes to deploy
 ####################################################################################################
-
+echo " "
 echo "===================================================================================================="
 echo "Amount of nodes to deploy"
 echo "===================================================================================================="
+echo " "
 
 # Function to check if input is a valid number
 is_number() {
@@ -156,11 +165,14 @@ while true; do
       ;;
   esac
 done
+echo "admin_nodes=$admin_nodes" >> vultr_deployment.tfvars
+echo "control_nodes=$control_nodes" >> vultr_deployment.tfvars
+echo "compute_nodes=$compute_nodes" >> vultr_deployment.tfvars
 
 ####################################################################################################
 # Prompt for Vultr API key
 ####################################################################################################
-
+echo " "
 echo "===================================================================================================="
 echo "Vultr API key"
 echo "===================================================================================================="
@@ -178,11 +190,12 @@ done
 
 # Output the API key length for confirmation (optional)
 echo "Length of the entered API key: $(echo $VULTR_API_KEY | wc -m) characters"
-
+echo "VULTR_API_KEY=$VULTR_API_KEY" >> vultr_deployment.tfvars
 
 ####################################################################################################
 # Prompt for firewall_group_id, vpc id, and region
 ####################################################################################################
+echo " "
 echo "===================================================================================================="
 echo "Firewall ID to deploy to"
 echo "===================================================================================================="
@@ -191,12 +204,14 @@ while true; do
   read -p "Please enter your firewall group ID: " firewall_group_id
   if [[ -n "$firewall_group_id" ]]; then
       echo "Firewall group ID entered successfully."
+      echo "firewall_group_id=$firewall_group_id" >> vultr_deployment.tfvars
       break
   else
       echo "Firewall group ID cannot be empty. Please try again."
   fi
 done
 
+echo " "
 echo "===================================================================================================="
 echo "Region to deploy to"
 echo "===================================================================================================="
@@ -237,7 +252,7 @@ declare -A regions=(
     ["Warsaw"]="waw"
     ["Toronto"]="yto"
 )
-
+echo " "
 echo "Please select a Vultr region:"
 echo " "
 
@@ -247,6 +262,7 @@ select abbreviation in "${!regions[@]}"; do
     if [[ -n "$abbreviation" ]]; then
         selected_region=${regions[$abbreviation]}
         echo "You selected: $selected_region ($abbreviation)"
+        echo "region=$selected_region" >> vultr_deployment.tfvars
         break
     else
         echo "Invalid selection. Please try again."
@@ -276,11 +292,12 @@ fi
 
 terraform -chdir=vultr init  #Initialize terraform
 
-if [ -z "$VPC_ID" ]; then
-    terraform -chdir=vultr apply -var region="$selected_region" -var tag="${USERNAME}" -var prefix="${USERNAME}" -var VULTR_API_KEY="$VULTR_API_KEY" -var ssh_public_key="$ssh_public_key" -var compute_nodes="$compute_nodes" -var control_nodes="$control_nodes" -var admin_nodes="$admin_nodes" -var firewall_group_id="$firewall_group_id"
-else
-    terraform -chdir=vultr apply -var region="$selected_region" -var cluster_vpc_id="$VPC_ID" -var tag="${USERNAME}" -var prefix="${USERNAME}" -var VULTR_API_KEY="$VULTR_API_KEY" -var ssh_public_key="$ssh_public_key" -var compute_nodes="$compute_nodes" -var control_nodes="$control_nodes" -var admin_nodes="$admin_nodes" -var firewall_group_id="$firewall_group_id"
-fi
+#if [ -z "$VPC_ID" ]; then
+    #terraform -chdir=vultr apply -var region="$selected_region" -var tag="${USERNAME}" -var prefix="${USERNAME}" -var VULTR_API_KEY="$VULTR_API_KEY" -var ssh_public_key="$ssh_public_key" -var compute_nodes="$compute_nodes" -var control_nodes="$control_nodes" -var admin_nodes="$admin_nodes" -var firewall_group_id="$firewall_group_id"
+     terraform -chdir=vultr apply
+#else
+   # terraform -chdir=vultr apply -var region="$selected_region" -var cluster_vpc_id="$VPC_ID" -var tag="${USERNAME}" -var prefix="${USERNAME}" -var VULTR_API_KEY="$VULTR_API_KEY" -var ssh_public_key="$ssh_public_key" -var compute_nodes="$compute_nodes" -var control_nodes="$control_nodes" -var admin_nodes="$admin_nodes" -var firewall_group_id="$firewall_group_id"
+#fi
 ###
 #add to check ansible
 

@@ -10,6 +10,8 @@ fz_domain="${lb_ip_dashed}.nip.io"
 keycloak_ip_dashed=${keycloak_ip//\./-}
 keycloak_domain="${keycloak_ip_dashed}.nip.io"
 
+fuzzball_default_version="v0.0.1-g91c1e539"
+
 if [[ -f ".env.sh" ]]
 then
     source .env.sh
@@ -22,8 +24,6 @@ then
     export keycloak_uuid
 fi
 
-fuzzball_default_version="v0.0.1-g91c1e539"
-
 if [[ -z $MTN_KEY ]]
 then
     read -rp "Enter your Mountain key: " MTN_KEY
@@ -31,13 +31,21 @@ then
     export MTN_KEY
 fi
 
-if [[ -z $fuzzball_operator_version ]]
-then
-    read -rp "Enter fuzzball operator version (default is ${fuzzball_default_version}): " fuzzbal_ver
-    fuzzball_operator_version=${fuzzbal_ver:-"${fuzzball_default_version}"}
-    echo "export fuzzball_operator_version=$fuzzball_operator_version" >> .env.sh
-    export fuzzball_operator_version
+
+if [[ -n $fuzzball_operator_version ]]; then
+    fuzzball_default_version=$fuzzball_operator_version
 fi
+
+read -rp "Enter fuzzball operator version (default: ${fuzzball_default_version}): " fuzzbal_ver
+fuzzball_operator_version="${fuzzbal_ver:-$fuzzball_default_version}"
+
+if grep -q '^export fuzzball_operator_version=' .env.sh; then
+    sed -i "s/^export fuzzball_operator_version=.*/export fuzzball_operator_version=$fuzzball_operator_version/" .env.sh
+else
+    echo "export fuzzball_operator_version=$fuzzball_operator_version" >> .env.sh
+fi
+export fuzzball_operator_version
+
 
 cat << EOF > hosts.yaml
 all:

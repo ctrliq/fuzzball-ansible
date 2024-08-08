@@ -3,8 +3,10 @@
 TF_OUTPUT=$(terraform -chdir=vultr output --json)
 substrate_nfs_subnet=$(echo "$TF_OUTPUT" | jq -r '.substrate_nfs_subnet.value')
 substrate_nfs_mount=$(echo "$TF_OUTPUT" | jq -r '.admin_nodes_private_ip.value.private_IP_admin1')
-metallb_lb_ip=$(echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value.public_IP_ctl1')
+metallb_lb_pub_ip=$(echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value.public_IP_ctl1')
+metallb_lb_ip="${substrate_nfs_subnet%.*}.99"
 keycloak_ip=$(echo "$TF_OUTPUT" | jq -r '.admin_nodes_public_ip.value.public_IP_admin1')
+lb_pub_ip_dashed=${metallb_lb_pub_ip//\./-}
 lb_ip_dashed=${metallb_lb_ip//\./-}
 fz_domain="${lb_ip_dashed}.nip.io"
 keycloak_ip_dashed=${keycloak_ip//\./-}
@@ -40,7 +42,7 @@ read -rp "Enter fuzzball operator version (default: ${fuzzball_default_version})
 fuzzball_operator_version="${fuzzbal_ver:-$fuzzball_default_version}"
 
 if grep -q '^export fuzzball_operator_version=' .env.sh; then
-    sed -i "s/^export fuzzball_operator_version=.*/export fuzzball_operator_version=$fuzzball_operator_version/" .env.sh
+    sed -i "" "s/^export fuzzball_operator_version=.*/export fuzzball_operator_version=$fuzzball_operator_version/" '.env.sh'
 else
     echo "export fuzzball_operator_version=$fuzzball_operator_version" >> .env.sh
 fi

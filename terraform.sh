@@ -530,8 +530,8 @@ main() {
     echo " "
     printf "\033[1;34m\033[40mansible-playbook --inventory hosts.yaml setup-rke2-and-fuzzball.yaml\033[0m\n"
     echo " "
-    printf "\033[1;34m\033[40mansible-playbook --inventory hosts.yaml setup-keycloak.yaml\033[0m\n"
-    echo " "
+    #printf "\033[1;34m\033[40mansible-playbook --inventory hosts.yaml setup-keycloak.yaml\033[0m\n"
+    #echo " "
 
 }
 

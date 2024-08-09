@@ -301,7 +301,7 @@ function generate_hosts() {
     fuzzball_operator_version="${fuzzbal_ver:-$fuzzball_default_version}"
 
     if grep -q '^export fuzzball_operator_version=' .env.sh; then
-        sed -i "" "s/^export fuzzball_operator_version=.*/export fuzzball_operator_version=$fuzzball_operator_version/" '.env.sh'
+        perl -pi -e "s/^export fuzzball_operator_version=.*/export fuzzball_operator_version=$fuzzball_operator_version/" '.env.sh'
     else
         echo "export fuzzball_operator_version=$fuzzball_operator_version" >> .env.sh
     fi

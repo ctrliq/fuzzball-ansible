@@ -8,8 +8,8 @@ resource "vultr_instance" "ctl" {
   count             = var.control_nodes
   label             = "Controller Node ${count.index+1} (${var.prefix})"
   tags              = ["${var.tag}"]
-  plan              = "vc2-6c-16gb"
   firewall_group_id = "${var.firewall_group_id}"
+  plan              = "vc2-6c-16gb"
   region            = var.region
   os_id             = 448 # rocky linux
   hostname          = "${var.prefix}-ctl${count.index+1}"

@@ -354,10 +354,10 @@ all:
     keycloak_env:
       KC_DB_PASSWORD: password
       KEYCLOAK_ADMIN_PASSWORD: password
-      KC_HOSTNAME_URL: https://auth.${keycloak_domain}
-      KC_HOSTNAME_ADMIN_URL: https://authadmin.${keycloak_domain}
-    keycloak_certbot_email: noreply@ciq.co
-    keycloak_certbot_domain: "auth.${keycloak_domain},authadmin.${keycloak_domain}"
+      KC_HOSTNAME_URL: https://auth.${fz_domain}/auth
+      KC_HOSTNAME_ADMIN_URL: https://auth.${fz_domain}/auth
+    # keycloak_certbot_email: noreply@ciq.co
+    # keycloak_certbot_domain: "auth.${keycloak_domain},authadmin.${keycloak_domain}"
 EOF
 
     cat << EOF >> hosts.yaml
@@ -482,6 +482,17 @@ function wipe() {
     fi
 }
 
+function help() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  --apply     Apply Terraform configuration but do not run wizard"
+    echo "  --destroy   Destroy Terraform-managed infrastructure"
+    echo "  --hosts     Generate hosts.yaml file but do not run wizard"
+    echo "  --wipe      Wipe tfvars and .env.sh"
+    echo "  -h, --help      Display this help message"
+
+}
+
 main() {
     ##################################################################################################################################
     # Terraform
@@ -534,7 +545,8 @@ while [[ "$#" -gt 0 ]]; do
     --destroy) ACTION="terraform_destroy";;
     --hosts) ACTION="generate_hosts";;
     --wipe) ACTION="wipe";;
-    *) echo "Unknown parameter passed: $1"; exit 1;;
+    -h|--help) help; exit 0;;
+    *) echo "Unknown parameter passed: $1" ; help ; exit 1;;
   esac
   shift
 done

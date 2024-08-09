@@ -8,7 +8,6 @@ resource "vultr_instance" "admin" {
   count             = var.admin_nodes
   label             = "Admin Node ${count.index+1} (${var.prefix})"
   tags              = ["${var.tag}"]
-  firewall_group_id = "${var.firewall_group_id}"
   plan              = "vhf-1c-2gb"
   region            = var.region
   os_id             = 448 # rocky linux

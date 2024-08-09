@@ -260,6 +260,7 @@ function user_input() {
 
 function generate_hosts() {
     TF_OUTPUT=$(terraform -chdir=vultr output --json)
+    domain="${domain:-nip.io}"
     substrate_nfs_subnet=$(echo "$TF_OUTPUT" | jq -r '.substrate_nfs_subnet.value')
     substrate_nfs_mount=$(echo "$TF_OUTPUT" | jq -r '.admin_nodes_private_ip.value.private_IP_admin1')
     metallb_lb_pub_ip=$(echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value.public_IP_ctl1')
@@ -267,9 +268,9 @@ function generate_hosts() {
     keycloak_ip=$(echo "$TF_OUTPUT" | jq -r '.admin_nodes_public_ip.value.public_IP_admin1')
     lb_pub_ip_dashed=${metallb_lb_pub_ip//\./-}
     lb_ip_dashed=${metallb_lb_ip//\./-}
-    fz_domain="${lb_ip_dashed}.nip.io"
+    fz_domain="${lb_ip_dashed}.${domain}"
     keycloak_ip_dashed=${keycloak_ip//\./-}
-    keycloak_domain="${keycloak_ip_dashed}.nip.io"
+    keycloak_domain="${keycloak_ip_dashed}.${domain}"
 
     fuzzball_default_version="v0.0.1-gc972cffc"
 
@@ -342,7 +343,7 @@ all:
           create:
             realmId: ${keycloak_uuid}
             ingress:
-              hostname: auth.${keycloak_domain}
+              hostname: auth.${fz_domain}
         database:
           create:
             credentials:
@@ -485,10 +486,11 @@ function wipe() {
 function help() {
     echo "Usage: $0 [options]"
     echo "Options:"
-    echo "  --apply     Apply Terraform configuration but do not run wizard"
-    echo "  --destroy   Destroy Terraform-managed infrastructure"
-    echo "  --hosts     Generate hosts.yaml file but do not run wizard"
-    echo "  --wipe      Wipe tfvars and .env.sh"
+    echo "  --apply       Apply Terraform configuration but do not run wizard"
+    echo "  --destroy     Destroy Terraform-managed infrastructure"
+    echo "  --hosts       Generate hosts.yaml file but do not run wizard"
+    echo "  --wipe        Wipe tfvars and .env.sh"
+    echo "  -d, --domain  Used with --hosts will change the default nip.io to this domain"
     echo "  -h, --help      Display this help message"
 
 }
@@ -545,6 +547,7 @@ while [[ "$#" -gt 0 ]]; do
     --destroy) ACTION="terraform_destroy";;
     --hosts) ACTION="generate_hosts";;
     --wipe) ACTION="wipe";;
+    -d|--domain) domain=$2; shift;;
     -h|--help) help; exit 0;;
     *) echo "Unknown parameter passed: $1" ; help ; exit 1;;
   esac

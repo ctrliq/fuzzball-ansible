@@ -12,7 +12,7 @@ fz_domain="${lb_ip_dashed}.nip.io"
 keycloak_ip_dashed=${keycloak_ip//\./-}
 keycloak_domain="${keycloak_ip_dashed}.nip.io"
 
-fuzzball_default_version="v0.0.1-g91c1e539"
+fuzzball_default_version="v0.0.1-gc972cffc"
 
 if [[ -f ".env.sh" ]]
 then

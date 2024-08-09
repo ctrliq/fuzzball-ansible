@@ -187,6 +187,11 @@ function user_input() {
     echo "compute_nodes = \"$compute_nodes\""
     } >> vultr/terraform.tfvars
 
+    read -rp "Enter firewall group (Press Enter to proceed with ciq default): " firewall_group_id
+    firewall_group_id="${firewall_group_id:-"6d5385a0-dace-43ce-ad6a-6d7e09f9185c"}"
+    echo "firewall_group_id = \"${firewall_group_id}\"" >> vultr/terraform.tfvars
+
+
     ####################################################################################################
     # Prompt for Vultr API key
     ####################################################################################################

@@ -1,7 +1,7 @@
 variable "control_nodes" {
   type     = number
   nullable = false
-  default  = 0
+  default  = 3
 }
 
 resource "vultr_instance" "ctl" {
@@ -9,6 +9,7 @@ resource "vultr_instance" "ctl" {
   label             = "Controller Node ${count.index+1} (${var.prefix})"
   tags              = ["${var.tag}"]
   plan              = "vc2-6c-16gb"
+  firewall_group_id = "${var.firewall_group_id}"
   region            = var.region
   os_id             = 448 # rocky linux
   hostname          = "${var.prefix}-ctl${count.index+1}"

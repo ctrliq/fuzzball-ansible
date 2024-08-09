@@ -45,6 +45,10 @@ A kubernetes-substrate deployment uses the following playbooks:
 ansible-playbook setup-rke2-and-fuzzball.yaml --inventory hosts.yaml
 ```
 
+### Using the automated setup script
+
+You can run `terraform.sh` to simplify deployment. It will prompt for various inputs including your vultr API key, setup the server environment via terraform, and provide a valid hosts.yaml file for deployment
+
 ### See also
 
 * [Fuzzball Cluster Admin Guide][cluster-admin-guide]

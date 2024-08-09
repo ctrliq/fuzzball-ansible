@@ -387,8 +387,8 @@ EOF
 EOF
     done
     cat << EOF >> hosts.yaml
-        compute:
-        hosts:
+    compute:
+      hosts:
 EOF
     echo "$TF_OUTPUT" | jq -r '.compute_instances_public_ip.value | to_entries[] | "\(.key)=\(.value)"' | while IFS="=" read -r key value; do
     cat << EOF >> hosts.yaml

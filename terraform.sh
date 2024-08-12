@@ -502,7 +502,6 @@ function help() {
 
 function data() {
     print_header "Additional usefull commands"
-    echo " "
     echo "# Create dynamic proxy via SSH"
     echo " ssh -A -D 5900 $metallb_lb_pub_ip "
     echo " "

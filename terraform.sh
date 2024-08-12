@@ -501,12 +501,12 @@ function help() {
 }
 
 function data() {
+    print_header "Additional usefull commands"
     echo " "
     echo "# Create dynamic proxy via SSH"
-    echo "Additional usefull commands"
     echo " ssh -A -D 5900 $metallb_lb_pub_ip "
     echo " "
-    echo "# Set PATH and KUBECONFIG for later steps."
+    echo "# Set PATH and KUBECONFIG on Controller instance  for later steps."
     echo "PATH=/var/lib/rancher/rke2/bin:$PATH"
     echo "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"
     echo "kubectl get ingress -A"

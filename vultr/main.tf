@@ -17,7 +17,7 @@ variable "VULTR_API_KEY" {
 
 variable "firewall_group_id" {
   type     = string
-  nullable = false
+  nullable = true
 }
 
 variable "prefix" {

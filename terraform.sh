@@ -503,7 +503,9 @@ function help() {
 function data() {
     TF_OUTPUT=$(terraform -chdir=vultr output --json)
     domain="${domain:-nip.io}"
+    substrate_nfs_subnet=$(echo "$TF_OUTPUT" | jq -r '.substrate_nfs_subnet.value')
     metallb_lb_pub_ip=$(echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value.public_IP_ctl1')
+    metallb_lb_ip="${substrate_nfs_subnet%.*}.99"
     lb_ip_dashed=${metallb_lb_ip//\./-}
     fz_domain="${lb_ip_dashed}.${domain}"
 

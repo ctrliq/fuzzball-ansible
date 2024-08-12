@@ -25,6 +25,21 @@ print_header() {
     echo " "
 }
 
+function tfvars_output(){
+    TF_OUTPUT=$(terraform -chdir=vultr output --json)
+    domain="${domain:-nip.io}"
+    substrate_nfs_subnet=$(echo "$TF_OUTPUT" | jq -r '.substrate_nfs_subnet.value')
+    substrate_nfs_mount=$(echo "$TF_OUTPUT" | jq -r '.admin_nodes_private_ip.value.private_IP_admin1')
+    metallb_lb_pub_ip=$(echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value.public_IP_ctl1')
+    metallb_lb_ip="${substrate_nfs_subnet%.*}.99"
+    keycloak_ip=$(echo "$TF_OUTPUT" | jq -r '.admin_nodes_public_ip.value.public_IP_admin1')
+    lb_pub_ip_dashed=${metallb_lb_pub_ip//\./-}
+    lb_ip_dashed=${metallb_lb_ip//\./-}
+    fz_domain="${lb_ip_dashed}.${domain}"
+    keycloak_ip_dashed=${keycloak_ip//\./-}
+    keycloak_domain="${keycloak_ip_dashed}.${domain}"
+}
+
 
 function user_input() {
     ####################################################################################################
@@ -264,18 +279,7 @@ function user_input() {
 }
 
 function generate_hosts() {
-    TF_OUTPUT=$(terraform -chdir=vultr output --json)
-    domain="${domain:-nip.io}"
-    substrate_nfs_subnet=$(echo "$TF_OUTPUT" | jq -r '.substrate_nfs_subnet.value')
-    substrate_nfs_mount=$(echo "$TF_OUTPUT" | jq -r '.admin_nodes_private_ip.value.private_IP_admin1')
-    metallb_lb_pub_ip=$(echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value.public_IP_ctl1')
-    metallb_lb_ip="${substrate_nfs_subnet%.*}.99"
-    keycloak_ip=$(echo "$TF_OUTPUT" | jq -r '.admin_nodes_public_ip.value.public_IP_admin1')
-    lb_pub_ip_dashed=${metallb_lb_pub_ip//\./-}
-    lb_ip_dashed=${metallb_lb_ip//\./-}
-    fz_domain="${lb_ip_dashed}.${domain}"
-    keycloak_ip_dashed=${keycloak_ip//\./-}
-    keycloak_domain="${keycloak_ip_dashed}.${domain}"
+    tfvars_output
 
     fuzzball_default_version="v0.0.1-gc972cffc"
 
@@ -501,14 +505,7 @@ function help() {
 }
 
 function data() {
-    TF_OUTPUT=$(terraform -chdir=vultr output --json)
-    domain="${domain:-nip.io}"
-    substrate_nfs_subnet=$(echo "$TF_OUTPUT" | jq -r '.substrate_nfs_subnet.value')
-    metallb_lb_pub_ip=$(echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value.public_IP_ctl1')
-    metallb_lb_ip="${substrate_nfs_subnet%.*}.99"
-    lb_ip_dashed=${metallb_lb_ip//\./-}
-    fz_domain="${lb_ip_dashed}.${domain}"
-
+    tfvars_output
     print_header "Additional usefull commands"
     echo "# Create dynamic proxy via SSH"
     echo " ssh -A -D 5900 $metallb_lb_pub_ip "

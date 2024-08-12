@@ -495,6 +495,18 @@ function help() {
 
 }
 
+function data() {
+    echo " "
+    echo "# Create dynamic proxy via SSH"
+    echo "Additional usefull commands"
+    echo " ssh -A -D 5900 $metallb_lb_pub_ip "
+    echo ""
+    echo "# Set PATH and KUBECONFIG for later steps."
+    echo "PATH=/var/lib/rancher/rke2/bin:$PATH"
+    echo "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"
+    echo "kubectl get ingress -A"
+}
+
 main() {
     ##################################################################################################################################
     # Terraform
@@ -547,6 +559,7 @@ while [[ "$#" -gt 0 ]]; do
     --destroy) ACTION="terraform_destroy";;
     --hosts) ACTION="generate_hosts";;
     --wipe) ACTION="wipe";;
+    --data) ACTION="data";;
     -d|--domain) domain=$2; shift;;
     -h|--help) help; exit 0;;
     *) echo "Unknown parameter passed: $1" ; help ; exit 1;;

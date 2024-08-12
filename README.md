@@ -7,16 +7,29 @@ test resources on Vultr.][vultr]
 [vultr]: vultr/README.md
 
 
-## Prepare an inventory
+## Generate the hosts.yaml file
 
-This guide assumes that your host inventory is recorded in
-`hosts.yaml`. Start a new inventory by copying from the provided
-example.
+To generate the hosts.yaml file we need to run the script `terraform.sh` without options.
 
-    cp hosts.yaml-example hosts.yaml # customize hosts.yaml
-    
-If your hosts are not defined by name in DNS, `/etc/hosts`, or
-`.ssh/config`, define their IP address with `ansible_host`.
+This script will gather all the necesary input to deploy the vultr instances using the terraform code.
+
+```shell
+./terraform.sh
+```
+
+You can use `--help` for other options
+```shell
+$ ./terraform.sh -h
+Usage: ./terraform.sh [options]
+Options:
+  --apply       Apply Terraform configuration but do not run wizard
+  --destroy     Destroy Terraform-managed infrastructure
+  --hosts       Generate hosts.yaml file but do not run wizard
+  --wipe        Wipe tfvars and .env.sh
+  -d, --domain  Used with --hosts will change the default nip.io to this domain
+  -h, --help      Display this help message
+```
+
 
 For more general information, read [How to build your
 inventory][ansible_inventory].
@@ -28,7 +41,7 @@ available inventory variables.
 
 ### Playbooks
 
-A kubernetes-substrate deployment uses the following playbooks:
+A kubernetes-substrate deployment uses the following playbook:
 
 * `setup-rke2-and-fuzzball.yaml`
   * Deploy an NFS share on admin nodes.
@@ -36,14 +49,42 @@ A kubernetes-substrate deployment uses the following playbooks:
     control nodes.
   * Deploy Fuzzball Substrate on compute nodes.
   * Install the Fuzzball CLI on all nodes.
+
+```shell
+
+ansible-playbook setup-rke2-and-fuzzball.yaml --inventory hosts.yaml
+```  
+
+#### Keycloak
+
+Keycloak should get installed along with the fuzzball operator. In case you want to install Keycloak on a different instance you can run the following plabook. Please be aware that you will need to add the Realm manually.
+
 * `setup-keycloak.yaml`
   * install Keycloak on admin nodes for testing external Keycloak
     support.
 
 ```shell
 
-ansible-playbook setup-rke2-and-fuzzball.yaml --inventory hosts.yaml
+ansible-playbook setup-keycloak.yaml --inventory hosts.yaml
+```  
+
+### UI Access
+
+To access UI please create a dynamic proxy via ssh.
+
+```shell
+ssh -A -D 5900 <Controller_Node_IP>
 ```
+For the SOCKS proxy settings in your browser (the example here is Firefox), go to Network Settings →  Manual proxy configuration. Set the SOCKS proxy settings as localhost and port 5900 (the port number used is arbitrary, as long as it matches the port used in the prior ssh command).
+
+Use the Fuzzball UI URL that you received from running
+
+```shell
+
+./terraform.sh --data
+```
+
+Navigate to the URL in your browser. To login, you need the Fuzzball Admin credentials in thi scase use admin@ciq.com\password.
 
 ### See also
 
@@ -72,3 +113,21 @@ ansible-playbook setup-rke2-and-fuzzball.yaml --inventory hosts.yaml
 - configure default nfs storage
   - ephemeral
   - persistent
+
+
+Create a dynamic proxy via ssh.
+
+
+
+ssh -A -D 5900 <Controller_Node_IP>
+For the SOCKS proxy settings in your browser (the example here is Firefox), go to Network Settings →  Manual proxy configuration. Set the SOCKS proxy settings as localhost and port 5900 (the port number used is arbitrary, as long as it matches the port used in the prior ssh command).
+
+Open Screenshot from 2024-05-23 17-03-24.png
+Screenshot from 2024-05-23 17-03-24.png
+ 
+
+Open Screenshot from 2024-05-23 17-10-29.png
+Screenshot from 2024-05-23 17-10-29.png
+Use the Fuzzball UI URL that you received from iqube provision info.
+
+Navigate to the URL in your browser. To login, you need the Fuzzball Admin credentials from iqube provision info.

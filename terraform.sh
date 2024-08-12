@@ -504,6 +504,7 @@ function data() {
     TF_OUTPUT=$(terraform -chdir=vultr output --json)
     domain="${domain:-nip.io}"
     metallb_lb_pub_ip=$(echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value.public_IP_ctl1')
+    lb_ip_dashed=${metallb_lb_ip//\./-}
     fz_domain="${lb_ip_dashed}.${domain}"
 
     print_header "Additional usefull commands"

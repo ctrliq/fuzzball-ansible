@@ -187,6 +187,11 @@ function user_input() {
     echo "compute_nodes = \"$compute_nodes\""
     } >> vultr/terraform.tfvars
 
+    read -rp "Enter firewall group (Press Enter to proceed with ciq default): " firewall_group_id
+    firewall_group_id="${firewall_group_id:-"6d5385a0-dace-43ce-ad6a-6d7e09f9185c"}"
+    echo "firewall_group_id = \"${firewall_group_id}\"" >> vultr/terraform.tfvars
+
+
     ####################################################################################################
     # Prompt for Vultr API key
     ####################################################################################################
@@ -301,7 +306,7 @@ function generate_hosts() {
     fuzzball_operator_version="${fuzzbal_ver:-$fuzzball_default_version}"
 
     if grep -q '^export fuzzball_operator_version=' .env.sh; then
-        sed -i "" "s/^export fuzzball_operator_version=.*/export fuzzball_operator_version=$fuzzball_operator_version/" '.env.sh'
+        perl -pi -e "s/^export fuzzball_operator_version=.*/export fuzzball_operator_version=$fuzzball_operator_version/" '.env.sh'
     else
         echo "export fuzzball_operator_version=$fuzzball_operator_version" >> .env.sh
     fi

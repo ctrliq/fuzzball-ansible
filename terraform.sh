@@ -501,12 +501,17 @@ function help() {
 }
 
 function data() {
+    TF_OUTPUT=$(terraform -chdir=vultr output --json)
+    domain="${domain:-nip.io}"
+    metallb_lb_pub_ip=$(echo "$TF_OUTPUT" | jq -r '.controller_node_public_ips.value.public_IP_ctl1')
+    fz_domain="${lb_ip_dashed}.${domain}"
+
     print_header "Additional usefull commands"
     echo "# Create dynamic proxy via SSH"
     echo " ssh -A -D 5900 $metallb_lb_pub_ip "
     echo " "
     echo "# Set PATH and KUBECONFIG on Controller instance  for later steps."
-    echo "PATH=/var/lib/rancher/rke2/bin:$PATH"
+    echo "PATH=/var/lib/rancher/rke2/bin:$/PATH"
     echo "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"
     echo "kubectl get ingress -A"
     echo " "

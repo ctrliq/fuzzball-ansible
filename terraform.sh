@@ -500,11 +500,15 @@ function data() {
     echo "# Create dynamic proxy via SSH"
     echo "Additional usefull commands"
     echo " ssh -A -D 5900 $metallb_lb_pub_ip "
-    echo ""
+    echo " "
     echo "# Set PATH and KUBECONFIG for later steps."
     echo "PATH=/var/lib/rancher/rke2/bin:$PATH"
     echo "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"
     echo "kubectl get ingress -A"
+    echo " "
+    echo "# Fuzzball UI URL"
+    echo "ui.fb.${fz_domain}"
+    echo " "
 }
 
 main() {

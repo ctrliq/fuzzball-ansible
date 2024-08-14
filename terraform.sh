@@ -5,10 +5,12 @@ print_header() {
     local message="$1"
     
     # Get the width of the terminal
-    local width=$(tput cols)
+    local width
+    width=$(tput cols)
     
     # Generate the top and bottom lines of '#' characters
-    local line=$(printf '%*s' "$width" '' | tr ' ' '=')
+    local line
+    line=$(printf '%*s' "$width" '' | tr ' ' '=')
 
     # Print the header
     echo " "
@@ -415,61 +417,32 @@ EOF
     printf "\e[32m✅ hosts.yaml\e[0m file generated. Please check for any issues.\n"
 }
 
+function check_jq() {
+    if ! command -v jq &> /dev/null
+    then
+        echo "❌ jq is not installed. Please install it to proceed."
+        printf "Rocky Linux: \033[0;32m dnf install jq \033[0m\n"
+        printf "MacOS: \033[0;32m brew install jq \033[0m\n"
+        exit 1
+    fi
+}
+
 function check_ansible() {
-    # Function to install Ansible using apt
-    install_ansible_apt() {
-        sudo apt update
-        sudo apt install -y ansible
-    }
+    if command -v ansible &> /dev/null
+    then
+        ansible_version=$(ansible --version | head -n 1 | sed -e 's/.*\[core \(.*\)]/\1/')
 
-    # Function to install Ansible using yum
-    install_ansible_yum() {
-        sudo yum install -y epel-release
-        sudo yum install -y ansible
-    }
-
-    # Function to install Ansible using dnf
-    install_ansible_dnf() {
-        sudo dnf install -y ansible
-    }
-
-    # Function to install Ansible using Homebrew
-    install_ansible_brew() {
-        brew install ansible
-    }
-
-    # Check if Ansible is installed
-    if command -v ansible >/dev/null 2>&1; then
-        echo "Ansible is installed."
-        ansible --version
-    else
-        echo "Ansible is not installed."
-        read -rp "Do you want to install Ansible? (yes/no): " choice
-        if [[ "$choice" == "yes" ]]; then
-            # Determine the package manager and install Ansible
-            if command -v apt >/dev/null 2>&1; then
-                install_ansible_apt
-            elif command -v yum >/dev/null 2>&1; then
-                install_ansible_yum
-            elif command -v dnf >/dev/null 2>&1; then
-                install_ansible_dnf
-            elif command -v brew >/dev/null 2>&1; then
-                install_ansible_brew
-            else
-                echo "Unsupported package manager. Please install Ansible manually."
-                exit 1
-            fi
-
-            # Verify installation
-            if command -v ansible >/dev/null 2>&1; then
-                echo "Ansible has been installed successfully."
-                ansible --version
-            else
-                echo "Failed to install Ansible. Please check your package manager and try again."
-            fi
+        if [ "$(echo "$ansible_version" 2.17 | awk '{if ($1 > $2) print 1; else print 0}')" -eq 1 ]
+        then
+            printf "❌❌❌ \033[0;31mWarning\033[0m: Your ansible version will not work with Rocky Linux 8. You will need to downgrade to 2.16 ❌❌❌\n"
+            printf "MacOS: \033[0;32m brew install ansible@9 && brew link --overwrite ansible@9 \033[0m\n"
         else
-            echo "Ansible installation aborted by the user."
+            printf "✅ Ansible is installed.\n"
         fi
+    else
+        printf "❌❌❌ \033[0;31mWarning\033[0m: Ansible is not installed. You will need it to proceed. ❌❌❌\n"
+        printf "Rocky Linux: \033[0;32m dnf install ansible-core \033[0m\n"
+        printf "MacOS: \033[0;32m brew install ansible@9 && brew link ansible@9 \033[0m\n"
     fi
 }
 
@@ -526,6 +499,11 @@ function data() {
 
 main() {
     ##################################################################################################################################
+    # Check for JQ
+    ##################################################################################################################################
+    check_jq
+
+    ##################################################################################################################################
     # Terraform
     ##################################################################################################################################
     if [[ ! -f vultr/terraform.tfvars ]]; then
@@ -554,7 +532,7 @@ main() {
     # Sending outputs to the user
     ##################################################################################################################################
 
-    print_header "Ansible has been installed successfully and hosts.yaml file has been generated with the necesary inputs\n\nTo continue deploying fuzzball to the recently created vultr instances please run the following commands"
+    print_header "The hosts.yaml file has been generated with the necesary inputs\n\nTo continue deploying fuzzball to the recently created vultr instances please run the following commands"
 
     printf "You can run '\033[32mexport ANSIBLE_HOST_KEY_CHECKING=False'\033[0m to ignore ssh host keys\n"
     echo "Run the following commands to start the install"

@@ -476,6 +476,7 @@ function help() {
     echo "  --destroy     Destroy Terraform-managed infrastructure"
     echo "  --hosts       Generate hosts.yaml file but do not run wizard"
     echo "  --wipe        Wipe tfvars and .env.sh"
+    echo "  --data        Outputs useful info"
     echo "  -d, --domain  Used with --hosts will change the default nip.io to this domain"
     echo "  -h, --help      Display this help message"
 
@@ -483,7 +484,7 @@ function help() {
 
 function data() {
     tfvars_output
-    print_header "Additional usefull commands"
+    print_header "Additional useful commands"
     echo "# Create dynamic proxy via SSH"
     echo " ssh -A -D 5900 $metallb_lb_pub_ip "
     echo " "

@@ -14,10 +14,10 @@
 - name: Configure fuzzball shared directory export
   ansible.builtin.lineinfile:
     path: /etc/exports
-    regexp: '^/fuzzball/shared '
-    line: /srv/fuzzball/shared {{ substrate_nfs_subnet }}(rw,sync,no_subtree_check,no_root_squash)
-  when: substrate_nfs_subnet is defined
+    line: /srv/fuzzball/shared {{ item }}(rw,sync,no_subtree_check,no_root_squash,crossmnt)
+  when: substrate_nfs_subnets is defined
   notify: Export NFS
+  loop: "{{ substrate_nfs_subnets }}"
 
 - name: Start nfs-server
   ansible.builtin.service:

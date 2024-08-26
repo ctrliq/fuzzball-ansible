@@ -1,0 +1,11 @@
+---
+
+- name: Deploy RKE2 helpers
+  hosts: controller
+  tasks:
+    - name: RKE2 shell profile
+      ansible.builtin.copy:
+        content: |
+          PATH=/var/lib/rancher/rke2/bin:$PATH
+          export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+        dest: /root/rke2.sh

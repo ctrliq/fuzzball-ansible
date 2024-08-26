@@ -37,11 +37,6 @@
     name: rke2-server
     state: started
 
-- name: RKE2 shell profile
-  ansible.builtin.copy:
-    src: rke2.sh
-    dest: /root/rke2.sh
-
 # - name: Disable RKE2 ingress hostPorts
 #   kubernetes.core.k8s:
 #     state: present

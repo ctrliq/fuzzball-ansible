@@ -1,1 +1,8 @@
 node-ip: {{ rke2_node_ip }}  # set to your node's internal IP address
+
+{% if rke2_cluster_cidr is defined %}
+cluster-cidr: {{ rke2_cluster_cidr }}
+{% endif %}
+{% if rke2_service_cidr is defined %}
+service-cidr: {{ rke2_service_cidr }}
+{% endif %}

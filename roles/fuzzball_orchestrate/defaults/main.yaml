@@ -3,7 +3,7 @@
 # built-in defaults
 fuzzball_orchestrate_defaults:
   apiVersion: deployment.ciq.com/v1alpha1
-  kind: Fuzzball
+  kind: FuzzballOrchestrate
   metadata:
     labels:
       app.kubernetes.io/name: fuzzball-orchestrate
@@ -28,6 +28,7 @@ fuzzball_orchestrate_defaults:
       log:
         storage:
           class: local-path
+        serviceAccount: {}
       schedule:
         storage:
           class: local-path
@@ -59,7 +60,10 @@ fuzzball_orchestrate_defaults:
     kyverno:
       create: {}
     tls:
-      create: {}
+      certManager:
+        create: {}
+      trustManager:
+        create: {}
     ingress:
       create:
         proxy:

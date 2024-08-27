@@ -1,14 +1,14 @@
 ---
 
 - name: Deploy Keycloak
-  hosts: admin
+  hosts: fuzzball_nfs_server
   pre_tasks:
   - name: Gather facts from ALL hosts (regardless of limit or tags)
     ansible.builtin.setup:
     delegate_to: "{{ item }}"
     delegate_facts: True
     when: hostvars[item]['ansible_default_ipv4'] is not defined
-    loop: "{{ groups['all'] }}"
+    loop: "{{ groups['fuzzball_controller'] + groups['fuzzball_compute'] }}"
   roles:
   - keycloak
   tags: keycloak

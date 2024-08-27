@@ -112,20 +112,20 @@ all:
   children:
     # Formal definition of an administrative node that provides NFS or
     # hosts an external Keycloak.
-    admin:
+    fuzzball_nfs_server:
       hosts:
         admin1:
           cluster_interface:
 
     # Hosts RKE2 and Fuzzball Orchestrate.
-    controller:
+    fuzzball_controller:
       hosts:
         ctl1:
           rke2_node_ip:
 
     # Compute nodes run Fuzzball Substrate as an agent of Fuzzball
     # Orchestrate and accept Fuzzball jobs for execution.
-    compute:
+    fuzzball_compute:
       hosts:
         compute[1:4]:
           cluster_interface:

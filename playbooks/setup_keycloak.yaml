@@ -10,5 +10,5 @@
     when: hostvars[item]['ansible_default_ipv4'] is not defined
     loop: "{{ groups['fuzzball_controller'] + groups['fuzzball_compute'] }}"
   roles:
-  - keycloak
+  - ciq.fuzzball.keycloak
   tags: keycloak

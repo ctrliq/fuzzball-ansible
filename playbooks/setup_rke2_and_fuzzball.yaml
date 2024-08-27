@@ -3,7 +3,7 @@
 - name: NFS export from admin for Substrate configuration
   hosts: fuzzball_nfs_server
   roles:
-  - nfs_server
+  - ciq.fuzzball.nfs_server
 
 - name: Deploy Fuzzball Orchestrate on a new RKE2 cluster
   hosts: fuzzball_controller
@@ -13,22 +13,22 @@
       name: python3-kubernetes
       state: present
   roles:
-  - mountain
-  - rke2
-  - metallb
-  - local_path_provisioner
-  - helm
-  - fuzzball_operator
-  - fuzzball_orchestrate
+  - ciq.fuzzball.mountain
+  - ciq.fuzzball.rke2
+  - ciq.fuzzball.metallb
+  - ciq.fuzzball.local_path_provisioner
+  - ciq.fuzzball.helm
+  - ciq.fuzzball.fuzzball_operator
+  - ciq.fuzzball.fuzzball_orchestrate
 
 - name: Deploy the Fuzzball CLI on controllers
   hosts: fuzzball_controller
   roles:
-  - fuzzball_cli
+  - ciq.fuzzball.fuzzball_cli
 
 - name: Install Fuzzball Substrate on compute nodes
   hosts: fuzzball_compute
   roles:
-  - mountain
-  - nfs_client
-  - fuzzball_substrate
+  - ciq.fuzzball.mountain
+  - ciq.fuzzball.nfs_client
+  - ciq.fuzzball.fuzzball_substrate

@@ -1,0 +1,6 @@
+# Directs AWX to install the local collection when imported as a project
+---
+collections:
+- name: ciq.fuzzball
+  source: ./
+  type: dir

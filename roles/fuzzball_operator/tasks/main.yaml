@@ -26,4 +26,4 @@
           username: ciq
           password: "{{ mtn_access_key }}"
       storageClassName: "{{ fuzzball_operator_storage_class }}"
-    kubeconfig: /etc/rancher/rke2/rke2.yaml
+    kubeconfig: "{{ kubeconfig }}"

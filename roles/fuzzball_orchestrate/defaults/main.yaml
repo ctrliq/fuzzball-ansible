@@ -1,5 +1,7 @@
 ---
 
+kubeconfig: /etc/rancher/rke2/rke2.yaml
+
 # built-in defaults
 fuzzball_orchestrate_defaults:
   apiVersion: deployment.ciq.com/v1alpha1

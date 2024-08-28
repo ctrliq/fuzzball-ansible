@@ -12,7 +12,8 @@ all:
 
     # The subnet to which the provisioned NFS server will export the
     # shared file system.
-    substrate_nfs_subnet: 10.0.0.0/24
+    nfs_server_subnets:
+    - 10.0.0.0/24
 
     ##
     #  Fuzzball Substrate
@@ -20,10 +21,7 @@ all:
 
     # The NFS share Fuzzball Substrate will read configuration from.
     # configuration to fuzzball-substrate.
-    substrate_nfs_mount: admin1:/fuzzball/shared
-
-    # The config file that Fuzzball Substrate should use.
-    # FB_POLL_CONFIG: /fuzzball/shared/substrate/substrate-config.yaml
+    fuzzball_substrate_nfs_mount: nfs-server1:/srv/fuzzball/shared
 
     ##
     #  Fuzzball Orchestrate
@@ -78,6 +76,10 @@ all:
             credentials:
               password: # database password to use
 
+    ##
+    #  RKE2
+    #
+
     # Customizations for the default metallb pool that Fuzzball
     # Orchestrate will use for external services.
     #
@@ -94,7 +96,7 @@ all:
     #  Keycloak
     #
 
-    # Environment variables passed to Keycloak.
+    # Environment variables passed to an external Keycloak deployment (if used).
     #
     # For more information, see https://www.keycloak.org/server/all-config
     # keycloak_env:
@@ -115,17 +117,17 @@ all:
     fuzzball_nfs_server:
       hosts:
         admin1:
-          cluster_interface:
+          cluster_interface: # used to configure firewalld to allow cluster communication
 
     # Hosts RKE2 and Fuzzball Orchestrate.
     fuzzball_controller:
       hosts:
         ctl1:
-          rke2_node_ip:
+          rke2_node_ip: # which IP address a local RKE2 deployment should use
 
     # Compute nodes run Fuzzball Substrate as an agent of Fuzzball
     # Orchestrate and accept Fuzzball jobs for execution.
     fuzzball_compute:
       hosts:
         compute[1:4]:
-          cluster_interface:
+          cluster_interface: # used to configure firewalld to allow cluster communication

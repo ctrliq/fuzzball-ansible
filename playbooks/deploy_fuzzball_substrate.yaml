@@ -1,0 +1,6 @@
+---
+
+- name: Deploy Fuzzball Substrate
+  hosts: fuzzball_compute
+  roles:
+  - ciq.fuzzball.fuzzball_substrate

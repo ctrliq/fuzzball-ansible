@@ -22,6 +22,30 @@
     permanent: false
     state: enabled
 
+- name: Create shared storage mountpoint
+  ansible.builtin.file:
+    path: /fuzzball/shared
+    state: directory
+    mode: 0755
+
+- name: Install nfs-utils
+  ansible.builtin.package:
+    name: nfs-utils
+    state: present
+
+- name: Define NFS mount for /fuzzball/shared
+  ansible.builtin.template:
+    src: systemd/system/fuzzball-shared.mount
+    dest: /etc/systemd/system/fuzzball-shared.mount
+    mode: 0644
+  when: fuzzball_substrate_nfs_mount is defined
+
+- name: Mount /fuzzball/shared
+  ansible.builtin.systemd_service:
+    name: fuzzball-shared.mount
+    state: started
+    daemon_reload: true
+
 - name: Start Fuzzball Substrate
   ansible.builtin.service:
     name: fuzzball-substrate

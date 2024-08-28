@@ -1,0 +1,6 @@
+---
+
+- name: Configure NFS export for Orchestrate and Substrate
+  hosts: fuzzball_nfs_server
+  roles:
+  - ciq.fuzzball.nfs_server

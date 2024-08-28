@@ -1,9 +1,9 @@
 ---
 
-- name: Deploy Keycloak
-  hosts: fuzzball_nfs_server
+- name: Deploy an external Keycloak
+  hosts: fuzzball_external_keycloak
   pre_tasks:
-  - name: Gather facts from ALL hosts (regardless of limit or tags)
+  - name: Gather facts from Fuzzball hosts (regardless of limit or tags)
     ansible.builtin.setup:
     delegate_to: "{{ item }}"
     delegate_facts: True
@@ -11,4 +11,3 @@
     loop: "{{ groups['fuzzball_controller'] + groups['fuzzball_compute'] }}"
   roles:
   - ciq.fuzzball.keycloak
-  tags: keycloak

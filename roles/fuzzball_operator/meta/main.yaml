@@ -1,6 +1,0 @@
----
-dependencies:
-- role: mountain
-- role: rke2
-- role: local_path_provisioner
-- role: helm

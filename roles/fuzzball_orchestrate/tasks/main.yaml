@@ -10,4 +10,4 @@
     state: present
     apply: true
     definition: "{{ fuzzball_orchestrate_defaults | ansible.builtin.combine(fuzzball_orchestrate, recursive=true) }}"
-    kubeconfig: /etc/rancher/rke2/rke2.yaml
+    kubeconfig: "{{ kubeconfig }}"

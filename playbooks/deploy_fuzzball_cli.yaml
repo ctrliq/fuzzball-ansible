@@ -1,0 +1,6 @@
+---
+
+- name: Deploy the Fuzzball CLI
+  hosts: all
+  roles:
+  - ciq.fuzzball.fuzzball_cli

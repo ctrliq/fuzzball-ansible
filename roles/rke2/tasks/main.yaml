@@ -37,6 +37,50 @@
     name: rke2-server
     state: started
 
+- name: Install Local Path Provisioner
+  kubernetes.core.k8s:
+    state: present
+    src: https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.28/deploy/local-path-storage.yaml
+    kubeconfig: "{{ kubeconfig }}"
+  register: result
+  retries: 10
+  delay: 10
+  until: result.failed is not defined or result.failed == false
+
+- name: Create /opt/local-path-provisioner
+  ansible.builtin.file:
+    path: /opt/local-path-provisioner
+    state: directory
+
+- name: Fix /opt/local-path-provisioner context for SELinux
+  ansible.builtin.command: restorecon -rv /opt/local-path-provisioner
+
+- name: Install metallb
+  kubernetes.core.k8s:
+    state: present
+    src: https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
+    kubeconfig: "{{ kubeconfig }}"
+  register: result
+  retries: 10
+  delay: 10
+  until: result.failed is not defined or result.failed == false
+
+- name: Configure metallb pool
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ metallb_pool_defaults | ansible.builtin.combine(metallb_pool, recursive=true) }}"
+    kubeconfig: "{{ kubeconfig }}"
+  register: result
+  retries: 10
+  delay: 10
+  until: result.failed is not defined or result.failed == false
+
+- name: Configure metallb advertisement
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ metallb_advertisement_defaults | ansible.builtin.combine(metallb_advertisement, recursive=true) }}"
+    kubeconfig: "{{ kubeconfig }}"
+
 # - name: Disable RKE2 ingress hostPorts
 #   kubernetes.core.k8s:
 #     state: present

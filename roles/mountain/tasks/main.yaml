@@ -16,7 +16,11 @@
   - epel-release
   - mtn
 
-- name: Enroll in CIQ mountain
+- name: Enroll in CIQ Mountain
   ansible.builtin.command:
     cmd: "mtn enroll {{ mtn_access_key }}"
     creates: /etc/ciq/mountain/config.json
+
+- name: Enable fuzzball subscriptions
+  ansible.builtin.command: "mtn dnf enable {{ item }}"
+  loop: "{{ mtn_subscriptions }}"

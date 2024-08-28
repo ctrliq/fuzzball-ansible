@@ -1,7 +1,7 @@
 # fuzzball-ansible deployment automation
 
 `fuzzball-ansible` automates the process of deploying Fuzzball test
-environments, and [includes Terraform code for provisioning necessary
+environments and [includes Terraform code for provisioning necessary
 test resources on Vultr.][vultr]
 
 [vultr]: vultr/README.md
@@ -26,31 +26,53 @@ inventory][ansible_inventory].
 See the comments in `hosts.yaml-example` for more information on
 available inventory variables.
 
-### Playbooks
+## Playbooks
 
-A kubernetes-substrate deployment uses the following playbooks:
+`fuzzball-ansible` provides ready-to-run playbooks that can be used to deploy Fuzzball into an existing environment.
 
-* `setup-rke2-and-fuzzball.yaml`
-  * Deploy an NFS share on admin nodes.
-  * Deploy RKE2, the Fuzzball operator, and Fuzzball Orchestrate on
-    control nodes.
-  * Deploy Fuzzball Substrate on compute nodes.
-  * Install the Fuzzball CLI on all nodes.
-* `setup-keycloak.yaml`
-  * install Keycloak on admin nodes for testing external Keycloak
-    support.
+Example:
 
 ```shell
 
-ansible-playbook setup-rke2-and-fuzzball.yaml --inventory hosts.yaml
+ansible-playbook ciq.fuzzball.deploy_orchestrate --inventory hosts.yaml
 ```
 
-### See also
+These playbooks may also be used as examples to start an Ascender or AWX project.
 
-* [Fuzzball Cluster Admin Guide][cluster-admin-guide]
-* [Deploying a local RKE2 environment for Fuzzball deployment testing][deploy-rke2]
-* [Using the Fuzzball Operator][using-fuzzball-operator]
-* [Deploying Fuzzball Substrate][deploy-fuzzball-substrate]
+### ciq.fuzzball.deploy_fuzzball_orchestrate
+
+Deploy Fuzzball Orchestrate on `fuzzball_controller` nodes.
+This playbook automatically deploys the Fuzzball operator into the target Kubernetes cluster to manage the Fuzzball Orchestrate deployment.
+
+### ciq.fuzzball.deploy_fuzzball_substrate
+
+Deploy Fuzzball Substrate on `fuzzball_compute` nodes.
+Also configures an NFS client to access configuration published by Fuzzball Orchestrate.
+
+### ciq.fuzzball.deploy_fuzzball_cli
+
+Install the Fuzzball CLI on all nodes in the inventory.
+
+### ciq.fuzzball.deploy_nfs_server
+
+Deploy an NFS share on fuzzball_nfs_server nodes.
+Fuzzball Orchestrate uses this share to publish configuration for Fuzzball Substrate to consume,
+and Fuzzball Substrate uses this share to cache container images.
+This share may also be used as backing storage for Fuzzball storage classes.
+
+### ciq.fuzzball.deploy_rke2
+
+Deploy a single-node RKE2 "cluster" on `fuzzball_controller` nodes as an installation target for Fuzzball Orchestrate.
+Also installs the local path provisioner and metallb.
+
+See also: `ciq.fuzzball.deploy_nfs_server`
+
+## See also
+
+- [Fuzzball Cluster Admin Guide][cluster-admin-guide]
+- [Deploying a local RKE2 environment for Fuzzball deployment testing][deploy-rke2]
+- [Using the Fuzzball Operator][using-fuzzball-operator]
+- [Deploying Fuzzball Substrate][deploy-fuzzball-substrate]
 
 [cluster-admin-guide]: https://beta.fuzzball.io/docs/cluster-admin-guide/
 [deploy-rke2]: https://ciqinc.atlassian.net/wiki/spaces/ENG/pages/684720192/Deploying+a+local+RKE2+environment+for+Fuzzball+deployment+testing

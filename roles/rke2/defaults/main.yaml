@@ -1,5 +1,7 @@
 ---
 
+kubeconfig: /etc/rancher/rke2/rke2.yaml
+
 metallb_pool_defaults:
   apiVersion: metallb.io/v1beta1
   kind: IPAddressPool

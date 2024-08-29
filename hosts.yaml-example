@@ -71,10 +71,6 @@ all:
             realmId: # Unique UUIDv4, or existing UUIDv4 for external Keycloak
             ingres:
               hostname: # e.g., auth.10.0.0.99.nip.io
-        database:
-          create:
-            credentials:
-              password: # database password to use
 
     ##
     #  RKE2

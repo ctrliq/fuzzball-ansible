@@ -39,11 +39,11 @@ fuzzball_orchestrate_defaults:
       dns:
         externalService:
           type: NodePort
-          kube:
-            backendGatewayService:
-              type: LoadBalancer
-              annotations:
-                metallb.universe.tf/allow-shared-ip: "ingress-and-fuzzball"
+      kube:
+        backendGatewayService:
+          type: LoadBalancer
+          annotations:
+            metallb.universe.tf/allow-shared-ip: "ingress-and-fuzzball"
       storage:
         gossipService:
           type: NodePort
@@ -57,8 +57,6 @@ fuzzball_orchestrate_defaults:
         enableDebugPod: true
         storage:
           class: local-path
-        credentials:
-          user: postgres
     kyverno:
       create: {}
     tls:

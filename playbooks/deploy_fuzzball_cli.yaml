@@ -1,6 +1,6 @@
 ---
 
 - name: Deploy the Fuzzball CLI
-  hosts: all
+  hosts: "{{ ansible_limit | default(omit) }}"
   roles:
   - ciq.fuzzball.fuzzball_cli

@@ -1,7 +1,7 @@
 ---
 
 - name: Deploy an external Keycloak
-  hosts: fuzzball_external_keycloak
+  hosts: "{{ ansible_limit | default(omit) }}"
   pre_tasks:
   - name: Gather facts from Fuzzball hosts (regardless of limit or tags)
     ansible.builtin.setup:

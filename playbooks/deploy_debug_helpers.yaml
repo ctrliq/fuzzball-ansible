@@ -1,7 +1,7 @@
 ---
 
 - name: Deploy helper scripts
-  hosts: fuzzball_controller
+  hosts: "{{ ansible_limit | default(omit) }}"
   tasks:
     - name: rke2.sh
       ansible.builtin.copy:

@@ -5,7 +5,7 @@
   ansible.builtin.command:
     cmd: helm registry login repository.ciq.com --username ciq --password-stdin
     stdin: "{{ mtn_access_key }}"
-  when: mtn_access_key is defined
+  when: mtn_access_key is defined and mtn_access_key != ""
 
 - name: Install Fuzzball operator
   kubernetes.core.helm:

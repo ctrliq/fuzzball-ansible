@@ -20,6 +20,7 @@
   ansible.builtin.command:
     cmd: "mtn enroll {{ mtn_access_key }}"
     creates: /etc/ciq/mountain/config.json
+  when: mtn_access_key is defined and mtn_access_key != ""
 
 - name: Enable fuzzball subscriptions
   ansible.builtin.command: "mtn dnf enable {{ item }}"

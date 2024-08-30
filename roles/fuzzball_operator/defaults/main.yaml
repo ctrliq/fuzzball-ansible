@@ -6,3 +6,5 @@ fuzzball_operator_chart: "oci://repository.ciq.com/fuzzball-testing/images/helm/
 fuzzball_operator_image: "repository.ciq.com/fuzzball-testing/images/fuzzball-operator"
 #fuzzball_operator_version:
 fuzzball_operator_storage_class: "local-path"
+
+mtn_access_key: "{{ lookup('env','MOUNTAIN_TOKEN') }}"

@@ -1,6 +1,7 @@
 ---
 
 kubeconfig: /etc/rancher/rke2/rke2.yaml
+mtn_access_key: "{{ lookup('env','MOUNTAIN_TOKEN') }}"
 
 # built-in defaults
 fuzzball_orchestrate_defaults:

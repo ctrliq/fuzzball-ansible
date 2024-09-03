@@ -20,7 +20,8 @@ all:
     #
 
     # The NFS share Fuzzball Substrate will read configuration from.
-    # configuration to fuzzball-substrate.
+    # configuration to fuzzball-substrate. (Replace "nfs-server1" with the
+    # address or name of your NFS server.)
     fuzzball_substrate_nfs_mount: nfs-server1:/srv/fuzzball/shared
 
     ##
@@ -55,17 +56,17 @@ all:
               server: # IP address of NFS server hosting Fuzzball Substrate config
           kube:
             backendGatewayService:
-              metallb.universe.tf/loadBalancerIPs: # preferred external IP address
+              metallb.universe.tf/loadBalancerIPs: # preferred individual external IP address; e.g., 10.0.0.99
           workflow:
             callbackService:
               annotations:
-                metallb.universe.tf/loadBalancerIPs: # preferred external IP address
+                metallb.universe.tf/loadBalancerIPs: # preferred individual external IP address; e.g., 10.0.0.99
         ingress:
           create:
-            domain: # e.g., 10.0.0.99.nip.io
+            domain: # parent domain under which Fuzzball services names will be defined; e.g., 10.0.0.99.nip.io
             proxy:
               annotations:
-                metallb.universe.tf/loadBalancerIPs: # preferred external IP address
+                metallb.universe.tf/loadBalancerIPs: # preferred individual external IP address; e.g., 10.0.0.99
         keycloak:
           create:
             realmId: # Unique UUIDv4, or existing UUIDv4 for external Keycloak
@@ -79,14 +80,13 @@ all:
     # Customizations for the default metallb pool that Fuzzball
     # Orchestrate will use for external services.
     #
-    # Recommended site configuration parameters are indicated below.
+    # See also: https://metallb.io/configuration/
     #
-    # - https://ciqinc.atlassian.net/wiki/spaces/ENG/pages/786235424/Using+the+Fuzzball+Operator
-    # - https://metallb.universe.tf/
+    # Recommended site configuration parameters are indicated below.
     metallb_pool:
       spec:
         addresses:
-        - # addresses available for use with external services; e.g., "10.0.0.99-10.0.0.100"
+        - # addresses available for use with external services; e.g., 10.0.0.99/32
 
     ##
     #  Keycloak
@@ -98,7 +98,7 @@ all:
     # keycloak_env:
     #   KC_DB_PASSWORD:
     #   KEYCLOAK_ADMIN_PASSWORD:
-    #   KC_HOSTNAME_URL:
+    #   KC_HOSTNAME_URL: # e.g., https://auth.10.0.0.99.nip.io
     #   KC_HOSTNAME_ADMIN_URL:
 
     # Keycloak must be accessed via TLS, so we use certbot to generate
@@ -108,8 +108,7 @@ all:
     # keycloak_certbot_domain:
 
   children:
-    # Formal definition of an administrative node that provides NFS or
-    # hosts an external Keycloak.
+    # An administrative node that provides an NFS share.
     fuzzball_nfs_server:
       hosts:
         admin1:

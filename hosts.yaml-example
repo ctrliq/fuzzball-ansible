@@ -56,17 +56,17 @@ all:
               server: # IP address of NFS server hosting Fuzzball Substrate config
           kube:
             backendGatewayService:
-              metallb.universe.tf/loadBalancerIPs: # e.g., 10.0.0.99 # preferred individual external IP address
+              metallb.universe.tf/loadBalancerIPs: # preferred individual external IP address; e.g., 10.0.0.99
           workflow:
             callbackService:
               annotations:
-                metallb.universe.tf/loadBalancerIPs: # e.g., 10.0.0.99 # preferred individual external IP address
+                metallb.universe.tf/loadBalancerIPs: # preferred individual external IP address; e.g., 10.0.0.99
         ingress:
           create:
-            domain: # e.g., 10.0.0.99.nip.io
+            domain: # parent domain under which Fuzzball services names will be defined; e.g., 10.0.0.99.nip.io
             proxy:
               annotations:
-                metallb.universe.tf/loadBalancerIPs: # e.g., 10.0.0.99 # preferred individual external IP address
+                metallb.universe.tf/loadBalancerIPs: # preferred individual external IP address; e.g., 10.0.0.99
         keycloak:
           create:
             realmId: # Unique UUIDv4, or existing UUIDv4 for external Keycloak
@@ -79,16 +79,14 @@ all:
 
     # Customizations for the default metallb pool that Fuzzball
     # Orchestrate will use for external services.
-    # IP addresses should be in CIDR notation
+    #
+    # See also: https://metallb.io/configuration/
     #
     # Recommended site configuration parameters are indicated below.
-    #
-    # - https://ciqinc.atlassian.net/wiki/spaces/ENG/pages/786235424/Using+the+Fuzzball+Operator
-    # - https://metallb.universe.tf/
     metallb_pool:
       spec:
         addresses:
-        - # e.g., "10.0.0.99/32" # addresses available for use with external services
+        - # addresses available for use with external services; e.g., 10.0.0.99/32
 
     ##
     #  Keycloak
@@ -110,11 +108,7 @@ all:
     # keycloak_certbot_domain:
 
   children:
-    # You need to add the name "admin1, ctl1, etc" to your /etc/hosts or
-    # add "ansible_host:" with the IP address under the host
-    # 
-    # Formal definition of an administrative node that provides NFS or
-    # hosts an external Keycloak.
+    # An administrative node that provides an NFS share.
     fuzzball_nfs_server:
       hosts:
         admin1:

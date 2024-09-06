@@ -1,6 +1,6 @@
 ---
 
-mtn_access_token: "{{ lookup('env','MOUNTAIN_TOKEN') }}"
+mtn_access_key: "{{ lookup('env','MOUNTAIN_TOKEN') }}"
 mtn_subscriptions:
 - fuzzball
 - fuzzball-orchestrate

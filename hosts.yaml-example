@@ -12,7 +12,7 @@ all:
 
     # The subnet to which the provisioned NFS server will export the
     # shared file system.
-    nfs_server_subnets:
+    fuzzball_nfs_server_subnets:
     - 10.0.0.0/24
 
     ##

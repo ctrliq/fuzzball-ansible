@@ -2,6 +2,7 @@
 
 kubeconfig: /etc/rancher/rke2/rke2.yaml
 
+fuzzball_version: v2.0.11
 fuzzball_operator_chart: "oci://{{ depot_server }}/fuzzball/fuzzball-images/helm/fuzzball-operator"
 fuzzball_operator_image: "{{ depot_server }}/fuzzball/fuzzball-images/fuzzball-operator"
 fuzzball_operator_version: "{{ fuzzball_version }}"

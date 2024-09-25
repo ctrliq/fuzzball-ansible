@@ -1,5 +1,10 @@
 ---
 
+- name: Import CIQ Depot GPG key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://depot.ciq.com/public/files/depot-client/depot/RPM-GPG-KEY
+
 - name: Install CIQ Depot
   ansible.builtin.dnf:
     name: https://{{ depot_server }}/public/files/depot-client/depot/depot.x86_64.rpm

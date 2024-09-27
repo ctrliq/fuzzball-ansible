@@ -66,6 +66,7 @@ all:
         keycloak:
           create:
             realmId: # Unique UUIDv4, or existing UUIDv4 for external Keycloak
+            ownerEmail: # email address to identify the initial owner of the Fuzzball organization
             ingres:
               hostname: # e.g., auth.10.0.0.99.nip.io
 

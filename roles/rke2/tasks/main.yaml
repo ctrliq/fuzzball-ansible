@@ -37,7 +37,6 @@
     name: rke2-server
     state: started
     enabled: true
-    
 
 - name: Install Local Path Provisioner
   kubernetes.core.k8s:

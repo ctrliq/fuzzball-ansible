@@ -32,10 +32,12 @@
     dest: /etc/rancher/rke2/config.yaml
     mode: 0644
 
-- name: Start RKE2
+- name: Start and Enable RKE2
   ansible.builtin.service:
     name: rke2-server
     state: started
+    enabled: true
+    
 
 - name: Install Local Path Provisioner
   kubernetes.core.k8s:

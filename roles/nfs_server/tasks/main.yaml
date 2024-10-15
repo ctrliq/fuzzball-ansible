@@ -39,4 +39,4 @@
     permanent: false
   when:
   - cluster_interface is defined
-  - firewalld.status.ActiveState == 'started'
+  - firewalld.status.ActiveState == 'active'

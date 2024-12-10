@@ -27,7 +27,7 @@
     permanent: false
     state: enabled
   when:
-  - firewalld.status.ActiveState == 'started'
+  - firewalld.status.ActiveState == 'active'
 
 - name: Create shared storage mountpoint
   ansible.builtin.file:

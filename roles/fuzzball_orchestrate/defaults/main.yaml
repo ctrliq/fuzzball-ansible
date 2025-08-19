@@ -27,14 +27,9 @@ fuzzball_orchestrate_defaults:
         storage:
           class: local-path
         localStorage: true
-      schedule:
+      jetstream:
         storage:
           class: local-path
-        gossipService:
-          type: NodePort
-      storage:
-        gossipService:
-          type: NodePort
     database:
       create:
         enableDebugPod: true

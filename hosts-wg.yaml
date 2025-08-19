@@ -1,0 +1,51 @@
+all:
+  vars:
+    fuzzball_version: v2.1.0
+    #depot_server: depot.ciq.dev
+    #fuzzball_version: v0.0.1-gaaf568d2
+
+    fuzzball_orchestrate:
+      spec:
+        fuzzball:
+          substrate:
+            nfs:
+              server: 192.168.2.1
+          workflow:
+            callbackService:
+              annotations:
+                metallb.universe.tf/loadBalancerIPs: 192.168.2.99
+        ingress:
+          create:
+            domain: 192.168.2.99.nip.io
+            proxy:
+              annotations:
+                metallb.universe.tf/loadBalancerIPs: 192.168.2.99
+        keycloak:
+          create:
+            realmId: 087ee78a-276d-464b-bd80-4d2ce4ca3fc7
+            ownerEmail: admin@ciq.com
+            ingress:
+              hostname: auth.192.168.2.99.nip.io
+
+    fuzzball_nfs_exports_subnets:
+    - 10.0.0.0/24
+    - 192.168.2.0/24
+    - fe80::/10
+    fuzzball_substrate_nfs_mount: "192.168.2.1:/srv/fuzzball/shared"
+
+    metallb_pool:
+      spec:
+        addresses:
+        - "192.168.2.99-192.168.2.100"
+
+  hosts:
+    janderson-ctl1:
+      ansible_user: root
+      ansible_host: 149.28.46.29
+      rke2_node_ip: 192.168.2.1
+      cluster_interface: wg0
+    fb-poc-substrate1:
+      ansible_user: rocky
+      ansible_become: true
+      ansible_become_user: root
+      ansible_host: 3.145.69.42

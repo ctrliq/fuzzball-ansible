@@ -30,6 +30,8 @@ fuzzball_orchestrate_defaults:
       jetstream:
         storage:
           class: local-path
+        externalService:
+          type: NodePort
     database:
       create:
         enableDebugPod: true

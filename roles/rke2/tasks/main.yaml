@@ -58,8 +58,8 @@
 
 - name: Install NodePort Proxy for ingress
   import_tasks: nodeport_proxy.yaml
-  when: nodeport_proxy == true
+  when: nodeport_proxy | bool
 
 - name: Install metallb for ingress
   import_tasks: metallb.yaml
-  when: metallb == true
+  when: metallb | bool

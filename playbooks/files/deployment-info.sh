@@ -23,6 +23,10 @@ Fuzzball admin account:
 - username: $(getField .data.fuzzballAdminUsername)
 - password: $(getField .data.fuzzballAdminPassword)
 
+Fuzzball cluster admin account:
+- username: $(getField .data.clusterAdminUsername)
+- password: $(getField .data.clusterAdminPassword)
+
 Keycloak admin account:
 - username: $(getField .data.keycloakAdminUsername)
 - password: $(getField .data.keycloakAdminPassword)

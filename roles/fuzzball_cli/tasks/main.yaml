@@ -1,8 +1,7 @@
 ---
 
 - name: Install Fuzzball CLI
-  ansible.builtin.package:
-    name: "fuzzball-cli-{{ fuzzball_version
-                           | regex_replace('^v', '')
-                           | regex_replace('-(\\d+)-g', '^\\1~1.g') }}"
+  ansible.builtin.dnf:
+    name: "fuzzball-cli-{{ fuzzball_cli_version }}"
     state: present
+    enablerepo: "{{ 'fuzzball-prerelease' if prerelease | default(false) else omit }}"

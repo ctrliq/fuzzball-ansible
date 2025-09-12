@@ -1,12 +1,10 @@
 ---
 
 - name: Install Fuzzball Substrate
-  ansible.builtin.package:
-    name: "{{ item }}"
+  ansible.builtin.dnf:
+    name: fuzzball-substrate-orchestrate-{{ fuzzball_substrate_orchestrate_version }}
     state: present
-  loop:
-    - fuzzball-substrate
-    - fuzzball-substrate-orchestrate
+    enablerepo: "{{ 'fuzzball-prerelease' if prerelease | default(false) else omit }}"
 
 - name: Configure Fuzzball Substrate
   ansible.builtin.template:

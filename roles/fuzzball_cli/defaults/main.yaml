@@ -1,0 +1,1 @@
+fuzzball_cli_version: "{{ fuzzball_version | regex_replace('^v', '') | replace('-', '~') }}-1"

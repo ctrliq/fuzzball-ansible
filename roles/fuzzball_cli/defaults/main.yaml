@@ -1,1 +1,2 @@
 fuzzball_cli_version: "{{ fuzzball_version | regex_replace('^v', '') | replace('-', '~') }}-1"
+prerelease: "{{ fuzzball_cli_version is match('.*~pre[0-9]+.*') }}"

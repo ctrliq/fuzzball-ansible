@@ -4,4 +4,4 @@
   ansible.builtin.dnf:
     name: "fuzzball-cli-{{ fuzzball_cli_version }}"
     state: present
-    enablerepo: "{{ 'fuzzball-prerelease' if prerelease | default(false) else omit }}"
+    enablerepo: "{{ 'fuzzball-prerelease' if prerelease else omit }}"

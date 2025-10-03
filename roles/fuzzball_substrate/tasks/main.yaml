@@ -4,7 +4,7 @@
   ansible.builtin.dnf:
     name: fuzzball-substrate-orchestrate-{{ fuzzball_substrate_orchestrate_version }}
     state: present
-    enablerepo: "{{ 'fuzzball-prerelease' if prerelease | default(false) else omit }}"
+    enablerepo: "{{ 'fuzzball-prerelease' if prerelease else omit }}"
 
 - name: Configure Fuzzball Substrate
   ansible.builtin.template:

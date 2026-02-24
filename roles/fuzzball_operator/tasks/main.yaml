@@ -18,6 +18,8 @@
       image:
         repository: "{{ fuzzball_operator_image }}"
         tag: "{{ fuzzball_operator_version }}"
+      kubeRbacProxyImage:
+        repository: "{{ depot_server }}/fuzzball/fuzzball-images/kube-rbac-proxy"
       imagePullSecrets:
         name: "repository-ciq-com"
         inline:

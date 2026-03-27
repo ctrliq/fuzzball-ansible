@@ -51,6 +51,7 @@
     state: started
     enabled: true
     daemon_reload: true
+  when: fuzzball_substrate_nfs_mount is defined
 
 - name: Start Fuzzball Substrate
   ansible.builtin.service:

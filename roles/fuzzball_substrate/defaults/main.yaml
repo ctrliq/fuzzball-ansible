@@ -2,5 +2,5 @@
 
 FB_POLL_CONFIG: /fuzzball/shared/substrate/substrate-config.yaml
 
-fuzzball_substrate_orchestrate_version: "{{ fuzzball_version | regex_replace('^v', '') | replace('-', '~') }}-1"
+fuzzball_substrate_orchestrate_version: "{{ fuzzball_version | regex_replace('^v', '') | regex_replace('-(?=pre)', '~') | replace('-', '.') }}-1"
 prerelease: "{{ fuzzball_substrate_orchestrate_version is match('.*~pre[0-9]+.*') }}"

@@ -19,7 +19,7 @@ Keycloak URL:     $(getField .data.authURL)
 Fuzzball API URL: $(getField .data.fuzzballURL)
 Fuzzball UI URL:  $(getField .data.fuzzballUIURL)
 
-Fuzzball admin account:
+Fuzzball organization owner account:
 - username: $(getField .data.fuzzballAdminUsername)
 - password: $(getField .data.fuzzballAdminPassword)
 
